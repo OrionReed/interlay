@@ -1,0 +1,30 @@
+{
+	"name": "interlay",
+	"version": "1.0.0",
+	"description": "Augment the web with new interface affordances.",
+	"type": "module",
+	"scripts": {
+		"dev": "vite",
+		"build": "tsc && vite build --base=./",
+		"watch": "tsc && vite build --base=./ --watch",
+		"preview": "tsc && vite build --base=./ && vite preview"
+	},
+	"keywords": [],
+	"author": "Orion Reed",
+	"license": "ISC",
+	"dependencies": {
+		"@tldraw/tldraw": "2.0.2",
+		"react": "^18.2.0",
+		"react-dom": "^18.2.0"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "1.4.1",
+		"@types/react": "^18.2.15",
+		"@types/react-dom": "^18.2.7",
+		"@vitejs/plugin-react": "^4.0.3",
+		"typescript": "^5.0.2",
+		"vite": "^5.2.6",
+		"vite-plugin-static-copy": "^1.0.2",
+		"vite-plugin-top-level-await": "^1.3.1"
+	}
+}

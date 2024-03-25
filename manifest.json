@@ -2,30 +2,45 @@
   "manifest_version": 3,
   "name": "Interlay",
   "version": "0.1",
-  "description": "Agument the web with new interface affordances.",
+  "description": "Augment the web with new interface affordances.",
   "icons": {
     "48": "icons/interlay-48.png",
     "96": "icons/interlay-96.png"
   },
+  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'; font-src 'self' https://unpkg.com;",
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "dist/index.js",
+        "dist/index.html"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
+    }
+  ],
   "content_scripts": [
     {
       "matches": [
         "<all_urls>"
       ],
       "js": [
-        "interlay.js"
+        "dist/interlay.js",
+        "dist/index.js"
       ],
       "css": [
-        "style.css"
+        "dist/index.css"
       ]
     }
   ],
   "permissions": [
-    "activeTab"
+    "activeTab",
+    "tabs",
+    "scripting"
   ],
   "background": {
     "scripts": [
-      "background.js"
+      "dist/background.js"
     ]
   },
   "action": {
