@@ -1,0 +1,35 @@
+{
+  "manifest_version": 3,
+  "name": "Interlay",
+  "version": "0.1",
+  "description": "Agument the web with new interface affordances.",
+  "icons": {
+    "48": "icons/interlay-48.png",
+    "96": "icons/interlay-96.png"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "interlay.js"
+      ],
+      "css": [
+        "style.css"
+      ]
+    }
+  ],
+  "permissions": [
+    "activeTab"
+  ],
+  "background": {
+    "scripts": [
+      "background.js"
+    ]
+  },
+  "action": {
+    "default_icon": "icons/interlay-48.png",
+    "default_title": "Interlay"
+  }
+}
