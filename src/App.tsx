@@ -27,10 +27,14 @@ const components: TLUiComponents = {
 	MenuPanel: null,
 }
 
-console.log("DOING STUFF!!");
+console.log("App.tsx is loadin' up");
 
-
-ReactDOM.createRoot(document.getElementById("root")!).render(<App />);
+// Create root and violently insert it into the DOM
+const container = document.createElement('div');
+container.id = 'interlayCanvasRoot';
+document.body.appendChild(container);
+const root = ReactDOM.createRoot(container);
+root.render(<App />);
 
 function App() {
 	const [isCanvasMounted, setIsCanvasMounted] = useState(false);
@@ -55,28 +59,17 @@ function Canvas() {
 	console.log("CANVAS GO BRRRRR");
 
 	return (
-		<>
-			<Toggle />
-			<div className="tldraw__editor">
-				<Tldraw
-					components={components}
-					shapeUtils={[HTMLShapeUtil]}
-					onMount={() => {
-						window.dispatchEvent(new CustomEvent('editorDidMountEvent'));
-					}}
-				>
-				</Tldraw>
-			</div>
-		</>
+		<div className="tldraw__editor">
+			<Tldraw
+				components={components}
+				shapeUtils={[HTMLShapeUtil]}
+				onMount={() => {
+					window.dispatchEvent(new CustomEvent('editorDidMountEvent'));
+				}}
+			>
+			</Tldraw>
+		</div>
 	);
-}
-
-function Toggle() {
-	return (
-		<button type="button" id="toggle-canvas" onClick={() => window.dispatchEvent(new CustomEvent('toggleCanvasEvent'))}>
-			<img src="/canvas-button.svg" alt="Toggle Canvas" />
-		</button>
-	)
 }
 
 import { createShapeId } from "@tldraw/tldraw";
