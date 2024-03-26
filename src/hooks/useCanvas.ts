@@ -11,58 +11,56 @@ interface ElementInfo {
 
 export function useCanvas() {
   const [isCanvasEnabled, setIsCanvasEnabled] = useState(false);
-  const [elementsInfo, setElementsInfo] = useState<ElementInfo[]>([]);
+  const [elements, setElements] = useState<ElementInfo[]>([]);
 
   useEffect(() => {
-    const toggleCanvas = async () => {
-      if (!isCanvasEnabled) {
-        const info = await gatherElementsInfo();
-        setElementsInfo(info);
-        setIsCanvasEnabled(true);
-        document.getElementById('toggle-physics')?.classList.remove('hidden');
-      } else {
-        setElementsInfo([]);
-        setIsCanvasEnabled(false);
-        document.getElementById('toggle-physics')?.classList.add('hidden');
+    //@ts-ignore
+    const handleMessage = (event) => {
+      // Check for your specific message structure to avoid handling other messages
+      if (event.data.action && event.data.action === 'interlayCanvasToggle') {
+        setIsCanvasEnabled(event.data.detail);
       }
     };
-    // const enableCanvas = async () => {
-    //   const info = await gatherElementsInfo();
-    //   setElementsInfo(info);
-    //   setIsCanvasEnabled(true);
-    // };
 
-    window.addEventListener('toggleCanvasEvent', toggleCanvas);
-    // window.addEventListener('togglePhysicsEvent', enableCanvas);
+    window.addEventListener('message', handleMessage);
 
-    return () => {
-      window.removeEventListener('toggleCanvasEvent', toggleCanvas);
-      // window.removeEventListener('togglePhysicsEvent', enableCanvas);
-    };
+    return () => window.removeEventListener('message', handleMessage);
+  }, []);
+
+  useEffect(() => {
+    if (isCanvasEnabled) {
+      (async () => {
+        const elements = await gatherElements();
+        setElements(elements);
+      })();
+    } else {
+      setElements([]);
+    }
   }, [isCanvasEnabled]);
 
-  return { isCanvasEnabled, elementsInfo };
+  return { isCanvasEnabled, elements };
 }
 
-async function gatherElementsInfo() {
-  const rootElement = document.getElementsByTagName('main')[0];
+async function gatherElements() {
+  const rootElement = document.getElementsByTagName('body')[0];
   const info: any[] = [];
+
   if (rootElement) {
     for (const child of rootElement.children) {
-      if (['BUTTON'].includes(child.tagName)) continue;
+      if (['interlayCanvasRoot'].includes(child.id)) continue;
       const rect = child.getBoundingClientRect();
       let w = rect.width;
-      if (!['P', 'UL'].includes(child.tagName)) {
-        w = measureElementTextWidth(child as HTMLElement);
-      }
+      // if (!['P', 'UL'].includes(child.tagName)) {
+      //   w = measureElementTextWidth(child as HTMLElement);
+      // }
       // Check if the element is centered
       const computedStyle = window.getComputedStyle(child);
       let x = rect.left; // Default x position
-      if (computedStyle.display === 'block' && computedStyle.textAlign === 'center') {
-        // Adjust x position for centered elements
-        const parentWidth = child.parentElement ? child.parentElement.getBoundingClientRect().width : 0;
-        x = (parentWidth - w) / 2 + window.scrollX + (child.parentElement ? child.parentElement.getBoundingClientRect().left : 0);
-      }
+      // if (computedStyle.display === 'block' && computedStyle.textAlign === 'center') {
+      //   // Adjust x position for centered elements
+      //   const parentWidth = child.parentElement ? child.parentElement.getBoundingClientRect().width : 0;
+      //   x = (parentWidth - w) / 2 + window.scrollX + (child.parentElement ? child.parentElement.getBoundingClientRect().left : 0);
+      // }
 
       info.push({
         tagName: child.tagName,
