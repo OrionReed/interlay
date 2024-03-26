@@ -72,10 +72,9 @@ function App() {
 }
 
 function setBackgroundColor() {
-	const bodyStyle = window.getComputedStyle(document.body);
-	const bgColor = bodyStyle.backgroundColor;
-	const transparent = bgColor === 'transparent' || bgColor.includes('rgba') && bgColor.endsWith(', 0)');
-	const canvasBgColor = transparent ? 'white' : bgColor;
+	const bodyColor = window.getComputedStyle(document.body).backgroundColor;
+	const isTransparent = bodyColor === 'transparent' || bodyColor.includes('rgba') && bodyColor.endsWith(', 0)');
+	const canvasBgColor = isTransparent ? 'white' : bodyColor;
 	const root = document.getElementById('interlayCanvasRoot');
 	if (root) {
 		root.style.backgroundColor = canvasBgColor
