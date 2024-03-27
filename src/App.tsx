@@ -6,7 +6,7 @@ import "@tldraw/tldraw/tldraw.css";
 import "@/style.css"
 import React, { useEffect } from "react";
 import ReactDOM from "react-dom/client";
-import { useCanvas } from "@/hooks/useCanvas"
+import { useInterlay } from "@/hooks/useInterlay"
 import { Tldraw, TLUiComponents, createShapeId } from "@tldraw/tldraw";
 import { HTMLShape, HTMLShapeInfo, HTMLShapeUtil } from "@/shapes/HTMLShapeUtil";
 
@@ -31,7 +31,7 @@ const root = ReactDOM.createRoot(container);
 root.render(<App />);
 
 function App() {
-	const { isCanvasEnabled, shapes } = useCanvas();
+	const { isCanvasEnabled, shapes } = useInterlay();
 
 	useEffect(() => {
 		const interlayCanvasRoot = document.getElementById('interlayCanvasRoot');

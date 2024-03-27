@@ -1,8 +1,8 @@
 import { HTMLShape } from '@/shapes/HTMLShapeUtil';
-import { createShapeId, TLShapeId } from '@tldraw/tldraw';
+import { createShapeId } from '@tldraw/tldraw';
 import { useState, useEffect, useMemo } from 'react';
 
-export function useCanvas() {
+export function useInterlay() {
   const [isCanvasEnabled, setIsCanvasEnabled] = useState(false);
   const [shapes, setShapes] = useState<HTMLShape[]>([]);
 
