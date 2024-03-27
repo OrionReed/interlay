@@ -1,22 +1,14 @@
-import { useState, useEffect } from 'react';
-
-interface ElementInfo {
-  tagName: string;
-  x: number;
-  y: number;
-  w: number;
-  h: number;
-  html: string;
-}
+import { HTMLShape } from '@/shapes/HTMLShapeUtil';
+import { createShapeId, TLShapeId } from '@tldraw/tldraw';
+import { useState, useEffect, useMemo } from 'react';
 
 export function useCanvas() {
   const [isCanvasEnabled, setIsCanvasEnabled] = useState(false);
-  const [elements, setElements] = useState<ElementInfo[]>([]);
+  const [shapes, setShapes] = useState<HTMLShape[]>([]);
 
   useEffect(() => {
     //@ts-ignore
     const handleMessage = (event) => {
-      // Check for your specific message structure to avoid handling other messages
       if (event.data.action && event.data.action === 'interlayCanvasToggle') {
         setIsCanvasEnabled(event.data.detail);
       }
@@ -30,49 +22,40 @@ export function useCanvas() {
   useEffect(() => {
     if (isCanvasEnabled) {
       (async () => {
-        const elements = await gatherElements();
-        setElements(elements);
+        const elements = await gatherShapes();
+        setShapes(elements);
       })();
     } else {
-      setElements([]);
+      setShapes([]);
     }
   }, [isCanvasEnabled]);
 
-  return { isCanvasEnabled, elements };
+  return { isCanvasEnabled, shapes };
 }
 
-async function gatherElements() {
+async function gatherShapes() {
   const rootElement = document.getElementsByTagName('body')[0];
-  const info: any[] = [];
+  const shapes: HTMLShape[] = [];
 
   if (rootElement) {
     for (const child of rootElement.children) {
       if (['interlayCanvasRoot'].includes(child.id)) continue;
       const rect = child.getBoundingClientRect();
-      let w = rect.width;
-      // if (!['P', 'UL'].includes(child.tagName)) {
-      //   w = measureElementTextWidth(child as HTMLElement);
-      // }
-      // Check if the element is centered
-      const computedStyle = window.getComputedStyle(child);
-      let x = rect.left; // Default x position
-      // if (computedStyle.display === 'block' && computedStyle.textAlign === 'center') {
-      //   // Adjust x position for centered elements
-      //   const parentWidth = child.parentElement ? child.parentElement.getBoundingClientRect().width : 0;
-      //   x = (parentWidth - w) / 2 + window.scrollX + (child.parentElement ? child.parentElement.getBoundingClientRect().left : 0);
-      // }
 
-      info.push({
-        tagName: child.tagName,
-        x: x,
+      shapes.push({
+        id: createShapeId(),
+        type: 'html',
+        x: rect.left,
         y: rect.top,
-        w: w,
-        h: rect.height,
-        html: child.outerHTML
+        props: {
+          w: rect.width,
+          h: rect.height,
+          html: child.outerHTML
+        }
       });
     };
   }
-  return info;
+  return shapes;
 }
 
 function measureElementTextWidth(element: HTMLElement) {

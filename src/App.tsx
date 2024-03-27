@@ -1,38 +1,17 @@
-// import { inject } from '@vercel/analytics';
-import { getAssetUrlsByMetaUrl } from '@tldraw/assets/urls'
 import {
-	createTLUser,
 	Editor,
-	setDefaultEditorAssetUrls,
 	setUserPreferences,
-	TLDrawShape,
-	// setDefaultUiAssetUrls,
 } from '@tldraw/tldraw'
 import "@tldraw/tldraw/tldraw.css";
 import "@/style.css"
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import ReactDOM from "react-dom/client";
-// import { Default } from "@/components/Default";
-// import { Canvas } from "@/components/Canvas";
-// import { Toggle } from "@/components/Toggle";
 import { useCanvas } from "@/hooks/useCanvas"
-// import { createShapes } from "@/utils";
-// import { BrowserRouter, Route, Routes } from 'react-router-dom';
-// import { Contact } from "@/components/Contact";
-import { Tldraw, TLShape, TLUiComponents } from "@tldraw/tldraw";
-import { HTMLShapeUtil } from "./HTMLShapeUtil";
+import { Tldraw, TLUiComponents, createShapeId } from "@tldraw/tldraw";
+import { HTMLShape, HTMLShapeInfo, HTMLShapeUtil } from "@/shapes/HTMLShapeUtil";
 
-// const assetUrls = getAssetUrlsByMetaUrl()
-// setDefaultEditorAssetUrls(assetUrls)
-// setDefaultUiAssetUrls(assetUrls)
 
-// browser.storage.onChanged.addListener(changes => {
-// 	if (changes.isInterlayCanvasActive) {
-// 		toggleSomething(changes.isExtensionActive.newValue);
-// 	}
-// });
-
-const components: TLUiComponents = {
+const UiComponents: TLUiComponents = {
 	DebugMenu: null,
 	HelpMenu: null,
 	StylePanel: null,
@@ -45,7 +24,6 @@ const components: TLUiComponents = {
 	MenuPanel: null,
 }
 
-// Create root and violently insert it into the DOM
 const container = document.createElement('div');
 container.id = 'interlayCanvasRoot';
 document.body.appendChild(container);
@@ -53,8 +31,7 @@ const root = ReactDOM.createRoot(container);
 root.render(<App />);
 
 function App() {
-	const { isCanvasEnabled, elements } = useCanvas();
-	const shapes = createShapes(elements)
+	const { isCanvasEnabled, shapes } = useCanvas();
 
 	useEffect(() => {
 		const interlayCanvasRoot = document.getElementById('interlayCanvasRoot');
@@ -82,11 +59,11 @@ function setBackgroundColor() {
 	return canvasBgColor
 }
 
-function Canvas({ shapes }: { shapes: TLDrawShape[] }) {
+function Canvas({ shapes }: { shapes: HTMLShape[] }) {
 	return (
 		<div className="tldraw__editor">
 			<Tldraw
-				components={components}
+				components={UiComponents}
 				shapeUtils={[HTMLShapeUtil]}
 				onMount={(editor: Editor) => {
 					const col = setBackgroundColor()
@@ -99,21 +76,7 @@ function Canvas({ shapes }: { shapes: TLDrawShape[] }) {
 	);
 }
 
-import { createShapeId } from "@tldraw/tldraw";
 
-function createShapes(elementsInfo: any) {
-	return elementsInfo.map((element: any) => ({
-		id: createShapeId(),
-		type: 'html',
-		x: element.x,
-		y: element.y,
-		props: {
-			w: element.w,
-			h: element.h,
-			html: element.html,
-		}
-	}));
-}
 
 //@ts-ignore
 function colorIsDark(color) {

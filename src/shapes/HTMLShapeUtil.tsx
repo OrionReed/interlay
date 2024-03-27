@@ -1,9 +1,13 @@
 import { Rectangle2d, resizeBox, TLBaseShape, TLOnResizeHandler } from '@tldraw/tldraw';
 import { HTMLContainer, ShapeUtil } from 'tldraw'
 
-export type HTMLShape = TLBaseShape<'html', { w: number; h: number, html: string }>
+type HTMLBaseShape = TLBaseShape<'html', { w: number; h: number, html: string }>
+type OmittedHTMLShapeProps = 'rotation' | 'index' | 'parentId' | 'isLocked' | 'opacity' | 'meta' | 'typeName';
 
-export class HTMLShapeUtil extends ShapeUtil<HTMLShape> {
+export type HTMLShape = Omit<HTMLBaseShape, OmittedHTMLShapeProps>;
+
+
+export class HTMLShapeUtil extends ShapeUtil<HTMLBaseShape> {
   static override type = 'html' as const
   override canBind = () => true
   override canEdit = () => false
@@ -31,7 +35,7 @@ export class HTMLShapeUtil extends ShapeUtil<HTMLShape> {
   }
 
   component(shape: HTMLShape) {
-    return <div dangerouslySetInnerHTML={{ __html: shape.props.html }}></div>
+    return <div dangerouslySetInnerHTML={{ __html: shape.props.html }} />
 
   }
 
