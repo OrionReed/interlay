@@ -4,8 +4,7 @@
   "version": "0.1",
   "description": "Augment the web with new interface affordances.",
   "icons": {
-    "48": "icons/interlay-48.png",
-    "96": "icons/interlay-96.png"
+    "128": "icons/interlay-128.png"
   },
   "browser_specific_settings": {
     "gecko": {
@@ -39,7 +38,7 @@
     ]
   },
   "action": {
-    "default_icon": "icons/interlay-48.png",
+    "default_icon": "icons/interlay-128.png",
     "default_title": "Interlay"
   }
 }
