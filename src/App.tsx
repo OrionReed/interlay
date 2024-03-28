@@ -76,8 +76,6 @@ function Canvas({ shapes }: { shapes: HTMLShape[] }) {
 	);
 }
 
-
-
 //@ts-ignore
 function colorIsDark(color) {
 

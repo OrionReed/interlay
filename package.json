@@ -13,7 +13,7 @@
 	"author": "Orion Reed",
 	"license": "ISC",
 	"dependencies": {
-		"@tldraw/tldraw": "^2.0.2",
+		"@tldraw/tldraw": "2.1.0-canary.408a26911447",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0"
 	},
