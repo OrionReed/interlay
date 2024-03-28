@@ -65,31 +65,3 @@ async function gatherShapes() {
   }
   return shapes;
 }
-
-function measureElementTextWidth(element: HTMLElement) {
-  // Create a temporary span element
-  const tempElement = document.createElement('span');
-  // Get the text content from the passed element
-  tempElement.textContent = element.textContent || element.innerText;
-  // Get the computed style of the passed element
-  const computedStyle = window.getComputedStyle(element);
-  // Apply relevant styles to the temporary element
-  tempElement.style.font = computedStyle.font;
-  tempElement.style.fontWeight = computedStyle.fontWeight;
-  tempElement.style.fontSize = computedStyle.fontSize;
-  tempElement.style.fontFamily = computedStyle.fontFamily;
-  tempElement.style.letterSpacing = computedStyle.letterSpacing;
-  // Ensure the temporary element is not visible in the viewport
-  tempElement.style.position = 'absolute';
-  tempElement.style.visibility = 'hidden';
-  tempElement.style.whiteSpace = 'nowrap'; // Prevent text from wrapping
-  // Append to the body to make measurements possible
-  document.body.appendChild(tempElement);
-  // Measure the width
-  const width = tempElement.getBoundingClientRect().width;
-  // Remove the temporary element from the document
-  document.body.removeChild(tempElement);
-  // Return the measured width
-  return width === 0 ? 10 : width;
-}
-
