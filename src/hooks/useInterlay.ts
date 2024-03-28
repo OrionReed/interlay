@@ -9,8 +9,8 @@ export function useInterlay() {
   useEffect(() => {
     //@ts-ignore
     const handleMessage = (event) => {
-      if (event.data.action && event.data.action === 'interlayCanvasToggle') {
-        setIsCanvasEnabled(event.data.detail);
+      if (event.data.action && event.data.action === 'enableInterlay') {
+        setIsCanvasEnabled(true);
       }
     };
 
@@ -20,6 +20,7 @@ export function useInterlay() {
   }, []);
 
   useEffect(() => {
+
     if (isCanvasEnabled) {
       (async () => {
         const elements = await gatherShapes();
@@ -38,6 +39,10 @@ async function gatherShapes() {
     {
       regex: /.*\.org.*/,
       selectors: ['body > *'],
+    },
+    {
+      regex: /orionreed.com/,
+      selectors: ['main > *'],
     },
     {
       regex: /.*/,

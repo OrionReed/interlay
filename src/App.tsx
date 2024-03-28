@@ -59,8 +59,6 @@ function setBackgroundColor() {
 }
 
 function Canvas({ shapes }: { shapes: HTMLShape[] }) {
-	console.log(shapes);
-
 	return (
 		<div className="tldraw__editor">
 			<Tldraw
