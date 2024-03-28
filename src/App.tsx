@@ -8,7 +8,7 @@ import React, { useEffect } from "react";
 import ReactDOM from "react-dom/client";
 import { useInterlay } from "@/hooks/useInterlay"
 import { Tldraw, TLUiComponents, createShapeId } from "@tldraw/tldraw";
-import { HTMLShape, HTMLShapeInfo, HTMLShapeUtil } from "@/shapes/HTMLShapeUtil";
+import { HTMLShape, HTMLShapeUtil } from "@/shapes/HTMLShapeUtil";
 
 
 const UiComponents: TLUiComponents = {

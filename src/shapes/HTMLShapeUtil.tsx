@@ -12,6 +12,7 @@ export class HTMLShapeUtil extends ShapeUtil<HTMLBaseShape> {
   override canBind = () => true
   override canEdit = () => false
   override canResize = () => true
+  override canSnap = () => true
   override isAspectRatioLocked = () => false
 
   getDefaultProps(): HTMLShape['props'] {

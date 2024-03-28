@@ -27,9 +27,9 @@ export default defineConfig({
     rollupOptions: {
       output: {
         // Configure output file names here
-        entryFileNames: `[name].js`, // For entry chunks
-        chunkFileNames: `[name].js`, // For non-entry chunks
-        assetFileNames: `[name].[ext]` // For static assets like images and styles
+        entryFileNames: "[name].js", // For entry chunks
+        chunkFileNames: "[name].js", // For non-entry chunks
+        assetFileNames: "[name].[ext]" // For static assets like images and styles
       }
     }
   },

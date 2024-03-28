@@ -1,5 +1,5 @@
 #interlayCanvasRoot {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
@@ -13,6 +13,10 @@
 
 .html-shape-container > * {
   margin: 0;
+}
+
+.tl-shape[data-shape-type="html"] {
+  overflow: hidden;
 }
 
 .tldraw__editor {

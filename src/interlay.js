@@ -1,6 +1,5 @@
 function handleMessage(request, sender) {
   if (request.action === "toggleInterlayCanvas") {
-    console.log('toggling');
     browser.storage.sync.get('isInterlayCanvasActive', (storage) => {
       const value =
         storage.isInterlayCanvasActive || false
@@ -14,3 +13,9 @@ function handleMessage(request, sender) {
 }
 
 browser.runtime.onMessage.addListener(handleMessage);
+
+document.addEventListener('DOMContentLoaded', () => {
+  browser.storage.sync.set({ isInterlayCanvasActive: false });
+  console.log('Interlay is ready');
+});
+

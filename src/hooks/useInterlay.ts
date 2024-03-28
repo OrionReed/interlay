@@ -34,7 +34,7 @@ export function useInterlay() {
 }
 
 async function gatherShapes() {
-  const rootElement = document.getElementsByTagName('body')[0];
+  const rootElement = document.getElementsByTagName('main')[0];
   const shapes: HTMLShape[] = [];
 
   if (rootElement) {
