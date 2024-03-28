@@ -14,7 +14,6 @@ import { HTMLShape, HTMLShapeUtil } from "@/shapes/HTMLShapeUtil";
 const UiComponents: TLUiComponents = {
 	DebugMenu: null,
 	HelpMenu: null,
-	StylePanel: null,
 	PageMenu: null,
 	NavigationPanel: null,
 	ContextMenu: null,
@@ -60,6 +59,8 @@ function setBackgroundColor() {
 }
 
 function Canvas({ shapes }: { shapes: HTMLShape[] }) {
+	console.log(shapes);
+
 	return (
 		<div className="tldraw__editor">
 			<Tldraw

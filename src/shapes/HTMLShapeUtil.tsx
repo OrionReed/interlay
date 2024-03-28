@@ -38,7 +38,8 @@ export class HTMLShapeUtil extends ShapeUtil<HTMLBaseShape> {
 
   component(shape: HTMLShape) {
     const parentStyle = shape.props.parentStyle;
-    return <div dangerouslySetInnerHTML={{ __html: shape.props.html }} style={parentStyle} className="html-shape-container" />;
+    const html = shape.props.html;
+    return <HTMLContainer id={shape.id} dangerouslySetInnerHTML={{ __html: html }} style={parentStyle} className="html-shape-container" />;
   }
 
   indicator(shape: HTMLShape) {
