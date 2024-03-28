@@ -4,11 +4,15 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  z-index: 99999999999;
+  z-index: 9999999;
   padding: 0;
   margin: 0;
   min-height: -webkit-fill-available;
   touch-action: none;
+}
+
+.html-shape-container > * {
+  margin: 0;
 }
 
 .tldraw__editor {

@@ -42,6 +42,13 @@ async function gatherShapes() {
       if (['interlayCanvasRoot'].includes(child.id)) continue;
       const rect = child.getBoundingClientRect();
 
+      const parentStyle: Record<string, string> = {};
+      if (child.parentElement) {
+        const parentComputedStyle = window.getComputedStyle(child.parentElement);
+        parentStyle.fontSize = parentComputedStyle.fontSize;
+        // Add more layout-affecting styles as needed
+      }
+
       shapes.push({
         id: createShapeId(),
         type: 'html',
@@ -50,7 +57,8 @@ async function gatherShapes() {
         props: {
           w: rect.width,
           h: rect.height,
-          html: child.outerHTML
+          html: child.outerHTML,
+          parentStyle: parentStyle // Assign the plain object instead
         }
       });
     };
@@ -84,3 +92,4 @@ function measureElementTextWidth(element: HTMLElement) {
   // Return the measured width
   return width === 0 ? 10 : width;
 }
+
