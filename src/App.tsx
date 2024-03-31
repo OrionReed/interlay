@@ -21,6 +21,7 @@ const UiComponents: TLUiComponents = {
 	QuickActions: null,
 	MainMenu: null,
 	MenuPanel: null,
+	StylePanel: null,
 }
 
 const container = document.createElement('div');

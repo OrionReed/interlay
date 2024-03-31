@@ -1,4 +1,4 @@
-import { Rectangle2d, resizeBox, TLBaseShape, TLOnResizeHandler } from '@tldraw/tldraw';
+import { Rectangle2d, resizeBox, TLBaseBoxShape, TLBaseShape, TLOnResizeHandler } from '@tldraw/tldraw';
 import { HTMLContainer, ShapeUtil } from 'tldraw'
 
 type HTMLBaseShape = TLBaseShape<'html', { w: number; h: number, html: string, parentStyle: Record<string, string> }>
@@ -24,7 +24,7 @@ export class HTMLShapeUtil extends ShapeUtil<HTMLBaseShape> {
     }
   }
 
-  override onResize: TLOnResizeHandler<any> = (shape, info) => {
+  override onResize: TLOnResizeHandler<HTMLBaseShape> = (shape: TLBaseBoxShape, info) => {
     return resizeBox(shape, info)
   }
 
