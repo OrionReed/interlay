@@ -1,5 +1,5 @@
-import { Rectangle2d, resizeBox, TLBaseBoxShape, TLBaseShape, TLOnResizeHandler } from '@tldraw/tldraw';
-import { HTMLContainer, ShapeUtil } from 'tldraw'
+import { Rectangle2d, resizeBox, TLBaseBoxShape, TLBaseShape, TLOnBeforeUpdateHandler, TLOnResizeHandler, TLOnTranslateHandler } from '@tldraw/tldraw';
+import { HTMLContainer, ShapeUtil, TLOnClickHandler } from 'tldraw'
 
 type HTMLBaseShape = TLBaseShape<'html', { w: number; h: number, html: string, parentStyle: Record<string, string> }>
 type OmittedHTMLShapeProps = 'rotation' | 'index' | 'parentId' | 'isLocked' | 'opacity' | 'typeName' | 'meta';
@@ -23,6 +23,17 @@ export class HTMLShapeUtil extends ShapeUtil<HTMLBaseShape> {
       parentStyle: {}
     }
   }
+
+  override onTranslate: TLOnBeforeUpdateHandler<HTMLBaseShape> = (prev, next) => {
+    if (prev.x !== next.x || prev.y !== next.y) {
+      this.editor.bringToFront([next.id]);
+    }
+  }
+
+  // TODO: make this work without blocking drag
+  // override onClick: TLOnClickHandler<HTMLBaseShape> = (shape) => {
+  //   this.editor.bringToFront([shape.id]);
+  // }
 
   override onResize: TLOnResizeHandler<HTMLBaseShape> = (shape: HTMLBaseShape, info) => {
     const element = document.getElementById(shape.id);
