@@ -13,8 +13,10 @@
 	},
 	"dependencies": {
 		"@tldraw/tldraw": "2.1.0-canary.fba2b0d07631",
+		"prismjs": "^1.29.0",
 		"react": "^18.2.0",
-		"react-dom": "^18.2.0"
+		"react-dom": "^18.2.0",
+		"react-simple-code-editor": "^0.13.1"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.4.1",

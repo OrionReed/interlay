@@ -1,5 +1,20 @@
-import { Rectangle2d, resizeBox, TLBaseBoxShape, TLBaseShape, TLOnResizeHandler } from '@tldraw/tldraw';
-import { HTMLContainer, ShapeUtil } from 'tldraw'
+import { Rectangle2d, resizeBox, TLBaseShape, TLOnClickHandler, TLOnResizeHandler } from '@tldraw/tldraw';
+import { HTMLContainer, ShapeUtil, TLOnDoubleClickHandler } from 'tldraw'
+import React from 'react';
+import Editor from 'react-simple-code-editor';
+import { highlight, languages } from 'prismjs/components/prism-core';
+import 'prismjs/components/prism-clike';
+import 'prismjs/components/prism-javascript';
+import 'prismjs/themes/prism.css'; //Example style, you can use another
+
+// function App() {
+// const [code, setCode] = React.useState(
+//   "function add(a, b) {\n  return a + b;\n}"
+// );
+//   return (
+
+//   );
+// }
 
 type CodeBaseShape = TLBaseShape<'html', { w: number; h: number, code: string }>
 type OmittedCodeShapeProps = 'rotation' | 'index' | 'parentId' | 'isLocked' | 'opacity' | 'typeName' | 'meta';
@@ -17,14 +32,20 @@ export class CodeShapeUtil extends ShapeUtil<CodeBaseShape> {
 
   getDefaultProps(): CodeShape['props'] {
     return {
-      w: 100,
-      h: 100,
-      code: "function foo() {}",
+      w: 300,
+      h: 300,
+      code: "function foo() {\n// Do something\n}",
     }
   }
 
   override onResize: TLOnResizeHandler<CodeBaseShape> = (shape: CodeBaseShape, info) => {
     return resizeBox(shape, info)
+  }
+
+  override onClick: TLOnClickHandler<CodeBaseShape> = (shape: CodeShape) => {
+  }
+  override onDoubleClick: TLOnDoubleClickHandler<CodeBaseShape> = (shape: CodeShape) => {
+
   }
 
   getGeometry(shape: CodeShape) {
@@ -36,7 +57,30 @@ export class CodeShapeUtil extends ShapeUtil<CodeBaseShape> {
   }
 
   component(shape: CodeShape) {
-    return <textarea id={shape.id}>{shape.props.code}</textarea>;
+    const [code, setCode] = React.useState(shape.props.code);
+    const run = () => {
+      console.log('running')
+    }
+    return <HTMLContainer id={shape.id} style={{ pointerEvents: 'all' }}>
+      <Editor
+        value={code}
+        onValueChange={code => setCode(code)}
+        highlight={code => highlight(code, languages.js)}
+        padding={10}
+        style={{
+          marginBottom: 5,
+          width: '100%',
+          height: '100%',
+          fontFamily: '"Fira code", "Fira Mono", monospace',
+          fontSize: 14,
+          outline: '1px solid rgba(0,0,0,0.5)',
+          borderRadius: 4,
+        }}
+      />
+      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <button type="button" onClick={run}>Run</button>
+      </div>
+    </HTMLContainer>;
   }
 
   indicator(shape: CodeShape) {

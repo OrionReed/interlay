@@ -5,8 +5,6 @@ import {
 	DefaultToolbarContent,
 	useTools,
 	useIsToolSelected,
-	DefaultKeyboardShortcutsDialog,
-	DefaultKeyboardShortcutsDialogContent,
 } from "@tldraw/tldraw";
 
 export const components: TLComponents = {
@@ -31,15 +29,6 @@ export const components: TLComponents = {
 				<DefaultToolbarContent />
 				<TldrawUiMenuItem {...tools.decompose} isSelected={isDecomposeSelected} />
 			</DefaultToolbar>
-		)
-	},
-	KeyboardShortcutsDialog: (props) => {
-		const tools = useTools()
-		return (
-			<DefaultKeyboardShortcutsDialog {...props}>
-				<DefaultKeyboardShortcutsDialogContent />
-				<TldrawUiMenuItem {...tools.code} />
-			</DefaultKeyboardShortcutsDialog>
 		)
 	},
 }
