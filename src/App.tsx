@@ -1,5 +1,6 @@
 import {
 	Editor,
+	TLUserPreferences,
 	setUserPreferences,
 } from '@tldraw/tldraw'
 import "@tldraw/tldraw/tldraw.css";
@@ -10,29 +11,19 @@ import { useInterlay } from "@/hooks/useInterlay"
 import { Tldraw, TLUiComponents, createShapeId } from "@tldraw/tldraw";
 import { HTMLShape, HTMLShapeUtil } from "@/shapes/HTMLShapeUtil";
 import { CodeShape, CodeShapeUtil } from "@/shapes/CodeShapeUtil";
-import { uiOverrides, components } from "@/UiOverrides";
+import { uiOverrides, components } from "@/ui/overrides";
 import { CodeTool } from './tools/codeTool';
+import { colorIsDark } from './utils/colorIsDark';
 
-const UiComponents: TLUiComponents = {
-	DebugMenu: null,
-	HelpMenu: null,
-	PageMenu: null,
-	NavigationPanel: null,
-	ContextMenu: null,
-	ActionsMenu: null,
-	QuickActions: null,
-	MainMenu: null,
-	MenuPanel: null,
-	StylePanel: null,
-	Toolbar: components.Toolbar,
-	// KeyboardShortcutsDialog: components.KeyboardShortcutsDialog,
-}
-
-const container = document.createElement('div');
-container.id = 'interlayCanvasRoot';
-document.body.appendChild(container);
-const root = ReactDOM.createRoot(container);
+const root = createRoot();
 root.render(<App />);
+
+function createRoot() {
+	const container = document.createElement('div');
+	container.id = 'interlayCanvasRoot';
+	document.body.appendChild(container);
+	return ReactDOM.createRoot(container);
+}
 
 function App() {
 	const { isCanvasEnabled, shapes } = useInterlay();
@@ -44,81 +35,37 @@ function App() {
 		}
 	}, [isCanvasEnabled]);
 
+	if (!isCanvasEnabled) {
+		return null
+	}
+
 	return (
 		<React.StrictMode>
-			{isCanvasEnabled && <Canvas shapes={shapes} />}
+			<div className="tldraw__editor">
+				<Tldraw
+					tools={[CodeTool]}
+					overrides={uiOverrides}
+					components={components}
+					shapeUtils={[HTMLShapeUtil, CodeShapeUtil]}
+					onMount={(editor: Editor) => {
+						setUserPreferences(getDefaultUserPreferences())
+						editor.createShapes(shapes)
+					}}
+				>
+				</Tldraw>
+			</div>
 		</React.StrictMode>
-	);
+	)
 
 }
 
-function Canvas({ shapes }: { shapes: HTMLShape[] }) {
-	return (
-		<div className="tldraw__editor">
-			<Tldraw
-				tools={[CodeTool]}
-				overrides={uiOverrides}
-				components={UiComponents}
-				shapeUtils={[HTMLShapeUtil, CodeShapeUtil]}
-				onMount={(editor: Editor) => {
-					const col = setBackgroundColor()
-					setUserPreferences({ id: 'interlay', isDarkMode: !colorIsDark(col) })
-					editor.createShapes(shapes)
-				}}
-			>
-			</Tldraw>
-		</div>
-	);
-}
-
-function setBackgroundColor() {
+function getDefaultUserPreferences(): TLUserPreferences {
 	const bodyColor = window.getComputedStyle(document.body).backgroundColor;
 	const isTransparent = bodyColor === 'transparent' || bodyColor.includes('rgba') && bodyColor.endsWith(', 0)');
-	const canvasBgColor = isTransparent ? 'white' : bodyColor;
+	const BgColor = isTransparent ? 'white' : bodyColor;
 	const root = document.getElementById('interlayCanvasRoot');
 	if (root) {
-		root.style.backgroundColor = canvasBgColor
+		root.style.backgroundColor = BgColor
 	}
-	return canvasBgColor
-}
-
-//@ts-ignore
-function colorIsDark(color) {
-
-	// Variables for red, green, blue values
-	let r: number;
-	let g: number;
-	let b: number;
-	let c;
-
-	// Check the format of the color, HEX or RGB?
-	if (color.match(/^rgb/)) {
-
-		// If RGB --> store the red, green, blue values in separate variables
-		c = color.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d+(?:\.\d+)?))?\)$/);
-
-		r = color[1];
-		g = color[2];
-		b = color[3];
-	}
-	else {
-
-		// If hex --> Convert it to RGB: http://gist.github.com/983661
-		c = +(`0x${color.slice(1).replace(
-			color.length < 5 && /./g, '$&$&')}`);
-
-		r = color >> 16;
-		g = color >> 8 & 255;
-		b = color & 255;
-	}
-
-	// HSP (Highly Sensitive Poo) equation from http://alienryderflex.com/hsp.html
-	const hsp = Math.sqrt(
-		0.299 * (r * r) +
-		0.587 * (g * g) +
-		0.114 * (b * b)
-	);
-
-	// Using the HSP value, determine whether the color is light or dark
-	return hsp < 127.5
+	return { id: 'interlay', isDarkMode: !colorIsDark(BgColor) }
 }

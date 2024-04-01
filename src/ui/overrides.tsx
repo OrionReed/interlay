@@ -1,10 +1,7 @@
 import {
-	// TLUiMenuGroup,
 	TLUiOverrides,
 	TLUiTranslationKey,
-	// menuItem,
 	TLComponents,
-	// toolbarItem,
 	DefaultToolbar,
 	TldrawUiMenuItem,
 	DefaultToolbarContent,
@@ -16,7 +13,6 @@ import {
 
 export const uiOverrides: TLUiOverrides = {
 	tools(editor, tools) {
-		// Create a tool item in the ui's context.
 		tools.code = {
 			id: 'code',
 			icon: 'code',
