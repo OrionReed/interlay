@@ -8,13 +8,18 @@ import "@/style.css"
 import React, { useEffect } from "react";
 import ReactDOM from "react-dom/client";
 import { useInterlay } from "@/hooks/useInterlay"
-import { Tldraw, TLUiComponents, createShapeId } from "@tldraw/tldraw";
-import { HTMLShape, HTMLShapeUtil } from "@/shapes/HTMLShapeUtil";
-import { CodeShape, CodeShapeUtil } from "@/shapes/CodeShapeUtil";
-import { uiOverrides, components } from "@/ui/overrides";
-import { CodeTool } from './tools/codeTool';
-import { colorIsDark } from './utils/colorIsDark';
+import { Tldraw } from "@tldraw/tldraw";
+import { HTMLShapeUtil } from "@/shapes/HTMLShapeUtil";
+import { CodeShapeUtil } from "@/shapes/CodeShapeUtil";
+import { overrides } from "@/ui/overrides";
+import { components } from "@/ui/components";
+import { CodeTool } from '@/tools/CodeTool';
+import { colorIsDark } from '@/utils/colorIsDark';
+import { DecomposeTool } from '@/tools/DecomposeTool';
+import { RecomposeTool } from '@/tools/RecomposeTool';
 
+const tools = [CodeTool, DecomposeTool, RecomposeTool]
+const shapeUtils = [HTMLShapeUtil, CodeShapeUtil]
 const root = createRoot();
 root.render(<App />);
 
@@ -43,10 +48,10 @@ function App() {
 		<React.StrictMode>
 			<div className="tldraw__editor">
 				<Tldraw
-					tools={[CodeTool]}
-					overrides={uiOverrides}
+					tools={tools}
+					overrides={overrides}
 					components={components}
-					shapeUtils={[HTMLShapeUtil, CodeShapeUtil]}
+					shapeUtils={shapeUtils}
 					onMount={(editor: Editor) => {
 						setUserPreferences(getDefaultUserPreferences())
 						editor.createShapes(shapes)

@@ -1,6 +1,47 @@
 import { HTMLShape } from '@/shapes/HTMLShapeUtil';
-import { createShapeId } from '@tldraw/tldraw';
+import { Vec, VecLike, createShapeId } from '@tldraw/tldraw';
 import { useState, useEffect } from 'react';
+
+const patterns = [
+  {
+    regex: /orionreed.com/,
+    selectors: ['main > *'],
+  },
+  {
+    regex: /.*/,
+    selectors: ['article', 'section', 'nav', 'table', 'ul', 'p', 'img', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']
+  },
+  // Add more patterns as needed
+];
+
+export function htmlToShape(element: HTMLElement, relativeTo: VecLike = { x: 0, y: 0 }): HTMLShape {
+  const rect = element.getBoundingClientRect();
+  let parentStyle: Record<string, string> = {};
+  if (element.parentElement) {
+    parentStyle = getStyle(element.parentElement);
+  }
+
+  return {
+    id: createShapeId(),
+    type: 'html',
+    x: rect.left + relativeTo.x,
+    y: rect.top + relativeTo.y,
+    props: {
+      w: rect.width,
+      h: rect.height,
+      html: element.outerHTML,
+      previousParentHtml: getOuterHtmlWithoutChildren(element.parentElement),
+      parentStyle: parentStyle
+    }
+  };
+}
+
+function getOuterHtmlWithoutChildren(element: HTMLElement): string {
+  // Clone the original element
+  const clone = element.cloneNode(false) as HTMLElement;
+  // The clone now has the same attributes as the original element but no children
+  return clone.outerHTML;
+}
 
 export function useInterlay() {
   const [isCanvasEnabled, setIsCanvasEnabled] = useState(false);
@@ -35,21 +76,6 @@ export function useInterlay() {
 }
 
 async function gatherShapes() {
-  const patterns = [
-    {
-      regex: /.*\.org.*/,
-      selectors: ['body > *'],
-    },
-    {
-      regex: /orionreed.com/,
-      selectors: ['main > *'],
-    },
-    {
-      regex: /.*/,
-      selectors: ['article', 'section', 'nav', 'table', 'ul', 'p', 'img', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']
-    },
-    // Add more patterns as needed
-  ];
 
   const currentUrl = window.location.href;
   let matchedSelectors: string[] = [];
@@ -82,28 +108,17 @@ async function gatherShapes() {
 
     // Convert the filtered elements into shapes
     for (const element of filteredElements) {
-      const rect = element.getBoundingClientRect();
-      const parentStyle: Record<string, string> = {};
-      if (element.parentElement) {
-        const parentComputedStyle = window.getComputedStyle(element.parentElement);
-        parentStyle.fontSize = parentComputedStyle.fontSize;
-        // Add more layout-affecting styles as needed
-      }
-
-      shapes.push({
-        id: createShapeId(),
-        type: 'html',
-        x: rect.left,
-        y: rect.top,
-        props: {
-          w: rect.width,
-          h: rect.height,
-          html: element.outerHTML,
-          parentStyle: parentStyle
-        }
-      });
+      shapes.push(htmlToShape(element))
     };
   }
 
   return shapes;
 }
+
+export function getStyle(element: HTMLElement): Record<string, string> {
+  const style: Record<string, string> = {}
+  const computedStyle = window.getComputedStyle(element);
+  style.fontSize = computedStyle.fontSize;
+  return style;
+}
+

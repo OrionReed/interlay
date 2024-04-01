@@ -1,17 +1,9 @@
 import {
 	TLUiOverrides,
-	TLUiTranslationKey,
-	TLComponents,
-	DefaultToolbar,
-	TldrawUiMenuItem,
-	DefaultToolbarContent,
-	useTools,
-	useIsToolSelected,
-	DefaultKeyboardShortcutsDialog,
-	DefaultKeyboardShortcutsDialogContent,
+	TLUiToolItem
 } from "@tldraw/tldraw";
 
-export const uiOverrides: TLUiOverrides = {
+export const overrides: TLUiOverrides = {
 	tools(editor, tools) {
 		tools.code = {
 			id: 'code',
@@ -22,39 +14,24 @@ export const uiOverrides: TLUiOverrides = {
 				editor.setCurrentTool('code')
 			},
 		}
+		tools.decompose = {
+			id: 'decompose',
+			icon: 'color',
+			label: 'Decompose',
+			kbd: 'x',
+			onSelect: () => {
+				editor.setCurrentTool('decompose')
+			},
+		}
+		tools.recompose = {
+			id: 'recompose',
+			icon: 'color',
+			label: 'recompose',
+			kbd: 'z',
+			onSelect: () => {
+				editor.setCurrentTool('recompose')
+			},
+		}
 		return tools
 	},
 };
-
-export const components: TLComponents = {
-	DebugMenu: null,
-	HelpMenu: null,
-	PageMenu: null,
-	NavigationPanel: null,
-	ContextMenu: null,
-	ActionsMenu: null,
-	QuickActions: null,
-	MainMenu: null,
-	MenuPanel: null,
-	StylePanel: null,
-
-	Toolbar: (props) => {
-		const tools = useTools()
-		const isCodeSelected = useIsToolSelected(tools.code)
-		return (
-			<DefaultToolbar {...props}>
-				<TldrawUiMenuItem {...tools.code} isSelected={isCodeSelected} />
-				<DefaultToolbarContent />
-			</DefaultToolbar>
-		)
-	},
-	KeyboardShortcutsDialog: (props) => {
-		const tools = useTools()
-		return (
-			<DefaultKeyboardShortcutsDialog {...props}>
-				<DefaultKeyboardShortcutsDialogContent />
-				<TldrawUiMenuItem {...tools.code} />
-			</DefaultKeyboardShortcutsDialog>
-		)
-	},
-}

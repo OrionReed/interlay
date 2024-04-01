@@ -1,7 +1,5 @@
 import { StateNode } from 'tldraw'
 
-// Check out the custom tool example for a more detailed explanation of the tool class.
-
 const OFFSET = 12
 export class CodeTool extends StateNode {
   static override id = 'code'

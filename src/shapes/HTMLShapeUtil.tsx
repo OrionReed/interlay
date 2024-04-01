@@ -1,7 +1,7 @@
 import { Rectangle2d, resizeBox, TLBaseBoxShape, TLBaseShape, TLOnBeforeUpdateHandler, TLOnResizeHandler, TLOnTranslateHandler } from '@tldraw/tldraw';
 import { HTMLContainer, ShapeUtil, TLOnClickHandler } from 'tldraw'
 
-type HTMLBaseShape = TLBaseShape<'html', { w: number; h: number, html: string, parentStyle: Record<string, string> }>
+export type HTMLBaseShape = TLBaseShape<'html', { w: number; h: number, html: string, parentStyle: Record<string, string>, previousParentHtml: string }>
 type OmittedHTMLShapeProps = 'rotation' | 'index' | 'parentId' | 'isLocked' | 'opacity' | 'typeName' | 'meta';
 
 export type HTMLShape = Omit<HTMLBaseShape, OmittedHTMLShapeProps>;
@@ -20,6 +20,7 @@ export class HTMLShapeUtil extends ShapeUtil<HTMLBaseShape> {
       w: 100,
       h: 100,
       html: "<div></div>",
+      previousParentHtml: "",
       parentStyle: {}
     }
   }
