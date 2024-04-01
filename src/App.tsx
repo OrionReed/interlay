@@ -9,7 +9,9 @@ import ReactDOM from "react-dom/client";
 import { useInterlay } from "@/hooks/useInterlay"
 import { Tldraw, TLUiComponents, createShapeId } from "@tldraw/tldraw";
 import { HTMLShape, HTMLShapeUtil } from "@/shapes/HTMLShapeUtil";
-
+import { CodeShape, CodeShapeUtil } from "@/shapes/CodeShapeUtil";
+import { uiOverrides, components } from "@/UiOverrides";
+import { CodeTool } from './tools/codeTool';
 
 const UiComponents: TLUiComponents = {
 	DebugMenu: null,
@@ -22,6 +24,8 @@ const UiComponents: TLUiComponents = {
 	MainMenu: null,
 	MenuPanel: null,
 	StylePanel: null,
+	Toolbar: components.Toolbar,
+	// KeyboardShortcutsDialog: components.KeyboardShortcutsDialog,
 }
 
 const container = document.createElement('div');
@@ -48,23 +52,14 @@ function App() {
 
 }
 
-function setBackgroundColor() {
-	const bodyColor = window.getComputedStyle(document.body).backgroundColor;
-	const isTransparent = bodyColor === 'transparent' || bodyColor.includes('rgba') && bodyColor.endsWith(', 0)');
-	const canvasBgColor = isTransparent ? 'white' : bodyColor;
-	const root = document.getElementById('interlayCanvasRoot');
-	if (root) {
-		root.style.backgroundColor = canvasBgColor
-	}
-	return canvasBgColor
-}
-
 function Canvas({ shapes }: { shapes: HTMLShape[] }) {
 	return (
 		<div className="tldraw__editor">
 			<Tldraw
+				tools={[CodeTool]}
+				overrides={uiOverrides}
 				components={UiComponents}
-				shapeUtils={[HTMLShapeUtil]}
+				shapeUtils={[HTMLShapeUtil, CodeShapeUtil]}
 				onMount={(editor: Editor) => {
 					const col = setBackgroundColor()
 					setUserPreferences({ id: 'interlay', isDarkMode: !colorIsDark(col) })
@@ -74,6 +69,17 @@ function Canvas({ shapes }: { shapes: HTMLShape[] }) {
 			</Tldraw>
 		</div>
 	);
+}
+
+function setBackgroundColor() {
+	const bodyColor = window.getComputedStyle(document.body).backgroundColor;
+	const isTransparent = bodyColor === 'transparent' || bodyColor.includes('rgba') && bodyColor.endsWith(', 0)');
+	const canvasBgColor = isTransparent ? 'white' : bodyColor;
+	const root = document.getElementById('interlayCanvasRoot');
+	if (root) {
+		root.style.backgroundColor = canvasBgColor
+	}
+	return canvasBgColor
 }
 
 //@ts-ignore

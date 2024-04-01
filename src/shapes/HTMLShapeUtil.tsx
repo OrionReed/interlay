@@ -24,7 +24,18 @@ export class HTMLShapeUtil extends ShapeUtil<HTMLBaseShape> {
     }
   }
 
-  override onResize: TLOnResizeHandler<HTMLBaseShape> = (shape: TLBaseBoxShape, info) => {
+  override onResize: TLOnResizeHandler<HTMLBaseShape> = (shape: HTMLBaseShape, info) => {
+    const element = document.getElementById(shape.id);
+    if (!element || !element.parentElement) return resizeBox(shape, info);
+    const { width, height } = element.parentElement.getBoundingClientRect();
+    if (element) {
+      const isOverflowing = element.scrollWidth > width || element.scrollHeight > height;
+      if (isOverflowing) {
+        element.parentElement?.classList.add('overflowing');
+      } else {
+        element.parentElement?.classList.remove('overflowing');
+      }
+    }
     return resizeBox(shape, info)
   }
 
@@ -39,7 +50,7 @@ export class HTMLShapeUtil extends ShapeUtil<HTMLBaseShape> {
   component(shape: HTMLShape) {
     const parentStyle = shape.props.parentStyle;
     const html = shape.props.html;
-    return <HTMLContainer id={shape.id} dangerouslySetInnerHTML={{ __html: html }} style={parentStyle} className="html-shape-container" />;
+    return <div id={shape.id} dangerouslySetInnerHTML={{ __html: html }} style={parentStyle} className="html-shape-container" />;
   }
 
   indicator(shape: HTMLShape) {
