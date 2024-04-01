@@ -1,7 +1,9 @@
 {
 	"name": "interlay",
-	"version": "1.0.0",
-	"description": "Augment the web with new interface affordances.",
+	"version": "0.0.1",
+	"description": "Make the web compostable",
+	"author": "Orion Reed",
+	"license": "ISC",
 	"type": "module",
 	"scripts": {
 		"dev": "vite",
@@ -9,12 +11,8 @@
 		"watch": "tsc && vite build --base=./ --watch",
 		"preview": "tsc && vite build --base=./ && vite preview"
 	},
-	"keywords": [],
-	"author": "Orion Reed",
-	"license": "ISC",
 	"dependencies": {
 		"@tldraw/tldraw": "2.1.0-canary.fba2b0d07631",
-		"@tldraw/assets": "2.1.0-canary.fba2b0d07631",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0"
 	},
@@ -25,7 +23,6 @@
 		"@vitejs/plugin-react": "^4.0.3",
 		"typescript": "^5.0.2",
 		"vite": "^5.2.6",
-		"vite-plugin-static-copy": "^1.0.2",
-		"vite-plugin-top-level-await": "^1.3.1"
+		"vite-plugin-static-copy": "^1.0.2"
 	}
 }
