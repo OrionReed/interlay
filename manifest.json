@@ -18,7 +18,6 @@
         "<all_urls>"
       ],
       "js": [
-        "dist/interlay.js",
         "dist/index.js"
       ],
       "css": [

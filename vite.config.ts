@@ -12,10 +12,6 @@ export default defineConfig({
         {
           src: 'src/background.js',
           dest: '.'
-        },
-        {
-          src: 'src/interlay.js',
-          dest: '.'
         }
       ]
     })
