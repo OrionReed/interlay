@@ -16,7 +16,6 @@ import {
 
 export const uiOverrides: TLUiOverrides = {
 	tools(editor, tools) {
-		// debugger;
 		// Create a tool item in the ui's context.
 		tools.code = {
 			id: 'code',
@@ -32,6 +31,17 @@ export const uiOverrides: TLUiOverrides = {
 };
 
 export const components: TLComponents = {
+	DebugMenu: null,
+	HelpMenu: null,
+	PageMenu: null,
+	NavigationPanel: null,
+	ContextMenu: null,
+	ActionsMenu: null,
+	QuickActions: null,
+	MainMenu: null,
+	MenuPanel: null,
+	StylePanel: null,
+
 	Toolbar: (props) => {
 		const tools = useTools()
 		const isCodeSelected = useIsToolSelected(tools.code)
@@ -47,7 +57,6 @@ export const components: TLComponents = {
 		return (
 			<DefaultKeyboardShortcutsDialog {...props}>
 				<DefaultKeyboardShortcutsDialogContent />
-				{/* Ideally, we'd interleave this into the tools group */}
 				<TldrawUiMenuItem {...tools.code} />
 			</DefaultKeyboardShortcutsDialog>
 		)
