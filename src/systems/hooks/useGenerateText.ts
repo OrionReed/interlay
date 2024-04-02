@@ -1,16 +1,4 @@
 import { useState, useCallback } from 'react';
-// import OpenAI from 'openai';
-// import fetchAdapter from '@vespaiach/axios-fetch-adapter'
-// import { ClientOptions } from 'openai';
-// import { SSE } from 'sse.js';
-// const options: ClientOptions = {
-// }
-// const openai = new OpenAI({
-//   apiKey: import.meta.env.VITE_OPENAI_API_KEY,
-//   // !! SPICY !!
-//   dangerouslyAllowBrowser: true,
-//   // fetch: fetchAdapter,
-// });
 
 export const useGenerateText = () => {
   const [response, setResponse] = useState('');
@@ -21,19 +9,19 @@ export const useGenerateText = () => {
     setLoading(true);
     setError(null);
 
+    // !! SPICY !!
     const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
-    const endpoint = "https://api.openai.com/v1/chat/completions"; // The endpoint for GPT-4 Turbo
+    const endpoint = "https://api.openai.com/v1/chat/completions";
     const query = {
       model: "gpt-4-turbo-preview",
       stream: false,
       messages: [
-        { role: "system", content: "You are a helpful assistant." },
+        { role: "system", content: "You are a helpful assistant. You may be given text or HTML as input." },
         { role: "user", content: prompt },
       ],
     };
 
     try {
-      console.log('trying');
       const response = await fetch(endpoint, {
         method: "POST",
         headers: {
@@ -42,18 +30,12 @@ export const useGenerateText = () => {
         },
         body: JSON.stringify(query),
       });
-      console.log('response', response);
-
       const data = await response.json();
-      console.log('data', data);
-
       setResponse(data.choices[0].message.content);
     } catch (error) {
       setError(error);
     } finally {
       setLoading(false);
-      console.log('finally', response);
-
     }
 
   }, []);

@@ -52,8 +52,6 @@ export class CodeShapeUtil extends ShapeUtil<CodeBaseShape> {
     const { response, generateText } = useGenerateText()
     const [code, setCode] = React.useState(shape.props.code);
     const run = () => {
-      console.log('writing poem');
-
       generateText('write a 20 word poem')
     }
     return <HTMLContainer id={shape.id} style={{ pointerEvents: 'all' }}>
