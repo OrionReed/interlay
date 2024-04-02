@@ -57,7 +57,6 @@ export const generate = async (prompt: string) => {
   };
 
   try {
-    console.log('tring...', query)
     const response = await fetch(endpoint, {
       method: "POST",
       headers: {
@@ -68,9 +67,8 @@ export const generate = async (prompt: string) => {
     });
     const data = await response.json();
     const result = data.choices[0].message.content
-    console.log('result', result)
     return result
   } catch (error) {
-    console.log(error)
+    console.error(error)
   }
 };

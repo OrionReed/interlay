@@ -1,4 +1,4 @@
-import { getStyle, htmlToShape } from '@/hooks/useInterlay'
+import { getContainerStyle, htmlToShape } from '@/hooks/useInterlay'
 import { HTMLShape, HTMLBaseShape } from '@/shapes/HTMLShapeUtil'
 import { TLShape, TLUnknownShape, createShapeId } from '@tldraw/tldraw'
 import { StateNode } from 'tldraw'

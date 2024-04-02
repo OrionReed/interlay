@@ -42,6 +42,7 @@ export class LLMTool extends StateNode {
         endPos = { x: arrow.props.end.x, y: arrow.props.end.y }
       }
       if (startShape && endShape) {
+        // @ts-ignore
         const input = startShape.props.html || startShape.props.text
         const boxShape: TLShapePartial<TLGeoShape> = {
           id: endShape.id,
