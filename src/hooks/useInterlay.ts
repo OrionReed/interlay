@@ -83,7 +83,6 @@ async function gatherShapes() {
   // Find the pattern that matches the current website
   for (const pattern of patterns) {
     if (pattern.regex.test(currentUrl)) {
-      console.log('Matched pattern:', pattern.regex);
       matchedSelectors = pattern.selectors;
       break;
     }

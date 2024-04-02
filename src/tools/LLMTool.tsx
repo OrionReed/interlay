@@ -9,9 +9,8 @@ export class LLMTool extends StateNode {
 
   override onEnter = () => {
     const selectedShapes = this.editor.getSelectedShapes()
-    // if (selectedShapes.length === 0) return
+    if (selectedShapes.length === 0) return
     const arrowShapes = selectedShapes.filter(shape => shape.type === 'arrow') as TLArrowShape[]
-    console.log('onEnter')
     this.process(arrowShapes)
     this.editor.setCurrentTool('select')
   }
@@ -26,7 +25,6 @@ export class LLMTool extends StateNode {
 
 
   process = (arrows: TLArrowShape[]) => {
-    console.log('process')
     for (const arrow of arrows) {
       let startShape: TLShape | undefined;
       let endShape: TLShape | undefined;
@@ -35,7 +33,6 @@ export class LLMTool extends StateNode {
       const text = arrow.props.text
       if (arrow.props.start.type === 'binding') {
         startShape = this.editor.getShape(arrow.props.start.boundShapeId)
-        console.log('startShape', startShape)
       } else if (arrow.props.start.type === 'point') {
         startPos = { x: arrow.props.start.x, y: arrow.props.start.y }
       }
@@ -45,9 +42,7 @@ export class LLMTool extends StateNode {
         endPos = { x: arrow.props.end.x, y: arrow.props.end.y }
       }
       if (startShape && endShape) {
-        console.log('startShape and endShape')
         const input = startShape.props.html || startShape.props.text
-        console.log('input', input)
         const boxShape: TLShapePartial<TLGeoShape> = {
           id: endShape.id,
           type: 'geo',
@@ -60,7 +55,6 @@ export class LLMTool extends StateNode {
         this.editor.updateShape(boxShape)
         const result = generate(`Instruction: ${text}\n\nInput: ${input}`)
         result.then(res => {
-          console.log('result', res)
           this.editor.updateShape({
             ...boxShape, props: {
               ...boxShape.props, align: 'start',
@@ -70,7 +64,6 @@ export class LLMTool extends StateNode {
         })
       }
     }
-    console.log('arrows', arrows);
   }
 }
 
