@@ -2,7 +2,7 @@ dist/
 .DS_Store
 bun.lockb
 yarn.lock
-
+.vscode/
 # Logs
 
 logs

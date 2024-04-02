@@ -49,14 +49,13 @@ export class CodeShapeUtil extends ShapeUtil<CodeBaseShape> {
   }
 
   component(shape: CodeShape) {
-    const { response, generateText } = useGenerateText()
     const [code, setCode] = React.useState(shape.props.code);
-    const run = () => {
-      generateText('write a 20 word poem')
+    const handleRun = () => {
+
     }
     return <HTMLContainer id={shape.id} style={{ pointerEvents: 'all' }}>
       <Editor
-        value={response}
+        value={code}
         onValueChange={code => setCode(code)}
         highlight={code => highlight(code, languages.js)}
         padding={10}
@@ -71,7 +70,7 @@ export class CodeShapeUtil extends ShapeUtil<CodeBaseShape> {
         }}
       />
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <button type="button" onClick={run}>Run</button>
+        <button type="button" onClick={handleRun}>Run</button>
       </div>
     </HTMLContainer>;
   }
