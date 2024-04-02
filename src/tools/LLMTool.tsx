@@ -1,7 +1,7 @@
 import { htmlToShape } from '@/hooks/useInterlay'
 import { HTMLShape, HTMLBaseShape } from '@/shapes/HTMLShapeUtil'
 import { generate, useGenerateText } from '@/systems/hooks/useGenerateText'
-import { TLArrowShape, TLShape, TLUnknownShape, VecLike } from '@tldraw/tldraw'
+import { TLArrowShape, TLGeoShape, TLShape, TLShapePartial, TLUnknownShape, VecLike } from '@tldraw/tldraw'
 import { StateNode } from 'tldraw'
 
 export class LLMTool extends StateNode {
@@ -48,13 +48,26 @@ export class LLMTool extends StateNode {
         console.log('startShape and endShape')
         const input = startShape.props.html || startShape.props.text
         console.log('input', input)
+        const boxShape: TLShapePartial<TLGeoShape> = {
+          id: endShape.id,
+          type: 'geo',
+          props: {
+            text: '⏳',
+            size: "s",
+            font: 'sans'
+          }
+        }
+        this.editor.updateShape(boxShape)
         const result = generate(`Instruction: ${text}\n\nInput: ${input}`)
         result.then(res => {
           console.log('result', res)
-          this.editor.updateShape({ id: endShape.id, type: endShape.type, props: { text: res } })
+          this.editor.updateShape({
+            ...boxShape, props: {
+              ...boxShape.props, align: 'start',
+              verticalAlign: 'start', text: res
+            }
+          })
         })
-        // console.log('result', result)
-        // this.editor.updateShape({ id: endShape.id, type: endShape.type, props: { text: result } })
       }
     }
     console.log('arrows', arrows);

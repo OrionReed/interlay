@@ -5,6 +5,8 @@
     "paths": {
       "@/*": ["*"],
     },
+    // Weird hack to see full popup types
+    "noErrorTruncation": true,
     "outDir": "./dist",
     "jsx": "react-jsx",
     "target": "ES2020",
