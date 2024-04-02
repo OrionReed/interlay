@@ -10,6 +10,11 @@ export default defineConfig({
         {
           src: 'src/background.js',
           dest: '.'
+        },
+        {
+          // !! CAREFUL WITH THIS ONE !!
+          src: '.env',
+          dest: '.'
         }
       ]
     })

@@ -17,22 +17,14 @@ export class RecomposeTool extends StateNode {
     if (shapes.length <= 1 || shapes[0].type !== 'html') return
     const first = shapes[0] as HTMLShape;
     const previousParentHTML: string = first.props.previousParentHtml;
-    console.log('previousParentHTML', previousParentHTML);
     const element = elementFromHTML(previousParentHTML);
     const safeElement = element instanceof Element ? element : document.createElement('div');
-    console.log('element', safeElement);
-    // if (!(element instanceof Element)) {
-    //   console.error("Recomposition failed: The generated element is not a valid HTML Element.");
-    //   return;
-    // }
-    // const style = element.parentElement ? getStyle(element.parentElement) : {};
     const bounds = this.editor.getSelectionPageBounds();
     for (const shape of shapes) {
       if (shape.type !== 'html') continue;
       const containerRoot = document.getElementById(shape.id).children[0];
       if (!containerRoot) return
       safeElement.appendChild(containerRoot);
-
 
       this.editor.deleteShape(shape.id);
     }
@@ -49,7 +41,6 @@ export class RecomposeTool extends StateNode {
         previousParentHtml: ""
       }
     }
-    console.log(recomposedShape.id);
     this.editor.createShapes([recomposedShape]);
   }
 }
@@ -59,7 +50,7 @@ export class RecomposeTool extends StateNode {
  * @param {Boolean} trim representing whether or not to trim input whitespace, defaults to true.
  * @return {Element | HTMLCollection | null}
  */
-function elementFromHTML(html: string, trim = true) {
+function elementFromHTML(html: string, trim = false) {
   // Process the HTML string.
   const processed = trim ? html.trim() : html;
   if (!processed) return null;

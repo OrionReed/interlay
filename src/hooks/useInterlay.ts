@@ -1,5 +1,5 @@
 import { HTMLShape } from '@/shapes/HTMLShapeUtil';
-import { Vec, VecLike, createShapeId } from '@tldraw/tldraw';
+import { VecLike, createShapeId } from '@tldraw/tldraw';
 import { useState, useEffect } from 'react';
 
 const patterns = [
@@ -9,7 +9,7 @@ const patterns = [
   },
   {
     regex: /.*/,
-    selectors: ['article', 'section', 'nav', 'table', 'ul', 'p', 'img', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']
+    selectors: ['article', 'section', 'nav', 'table', 'ul', 'p', 'img', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'iframe', 'blockquote', 'pre']
   },
   // Add more patterns as needed
 ];
