@@ -44,14 +44,7 @@ export function htmlToShape(element: HTMLElement, viewOffset: VecLike = { x: 0, 
       w: rect.width,
       h: rect.height,
       html: element.outerHTML,
-      previousParentHtml: getOuterHtmlWithoutChildren(element.parentElement),
       parentStyle: parentStyle
     }
   };
-} export function getOuterHtmlWithoutChildren(element: HTMLElement): string {
-  // Clone the original element
-  const clone = element.cloneNode(false) as HTMLElement;
-  // The clone now has the same attributes as the original element but no children
-  return clone.outerHTML;
 }
-
