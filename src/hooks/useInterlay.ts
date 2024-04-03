@@ -1,6 +1,6 @@
 import { HTMLShape } from '@/shapes/HTMLShapeUtil';
-import { Vec, VecLike, createShapeId } from '@tldraw/tldraw';
 import { useState, useEffect } from 'react';
+import { htmlToShape } from '@/utils/html';
 
 const patterns = [
   {
@@ -9,39 +9,10 @@ const patterns = [
   },
   {
     regex: /.*/,
-    selectors: ['article', 'section', 'nav', 'table', 'ul', 'p', 'img', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']
+    selectors: ['article', 'section', 'nav', 'table', 'ul', 'p', 'img', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'iframe', 'blockquote', 'pre']
   },
   // Add more patterns as needed
 ];
-
-export function htmlToShape(element: HTMLElement, relativeTo: VecLike = { x: 0, y: 0 }): HTMLShape {
-  const rect = element.getBoundingClientRect();
-  let parentStyle: Record<string, string> = {};
-  if (element.parentElement) {
-    parentStyle = getStyle(element.parentElement);
-  }
-
-  return {
-    id: createShapeId(),
-    type: 'html',
-    x: rect.left + relativeTo.x,
-    y: rect.top + relativeTo.y,
-    props: {
-      w: rect.width,
-      h: rect.height,
-      html: element.outerHTML,
-      previousParentHtml: getOuterHtmlWithoutChildren(element.parentElement),
-      parentStyle: parentStyle
-    }
-  };
-}
-
-function getOuterHtmlWithoutChildren(element: HTMLElement): string {
-  // Clone the original element
-  const clone = element.cloneNode(false) as HTMLElement;
-  // The clone now has the same attributes as the original element but no children
-  return clone.outerHTML;
-}
 
 export function useInterlay() {
   const [isCanvasEnabled, setIsCanvasEnabled] = useState(false);
@@ -83,7 +54,6 @@ async function gatherShapes() {
   // Find the pattern that matches the current website
   for (const pattern of patterns) {
     if (pattern.regex.test(currentUrl)) {
-      console.log('Matched pattern:', pattern.regex);
       matchedSelectors = pattern.selectors;
       break;
     }
@@ -111,14 +81,5 @@ async function gatherShapes() {
       shapes.push(htmlToShape(element))
     };
   }
-
   return shapes;
 }
-
-export function getStyle(element: HTMLElement): Record<string, string> {
-  const style: Record<string, string> = {}
-  const computedStyle = window.getComputedStyle(element);
-  style.fontSize = computedStyle.fontSize;
-  return style;
-}
-

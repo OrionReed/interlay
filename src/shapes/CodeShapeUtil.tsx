@@ -6,15 +6,7 @@ import { highlight, languages } from 'prismjs/components/prism-core';
 import 'prismjs/components/prism-clike';
 import 'prismjs/components/prism-javascript';
 import 'prismjs/themes/prism.css'; //Example style, you can use another
-
-// function App() {
-// const [code, setCode] = React.useState(
-//   "function add(a, b) {\n  return a + b;\n}"
-// );
-//   return (
-
-//   );
-// }
+import { useGenerateText } from '@/systems/hooks/useGenerateText';
 
 type CodeBaseShape = TLBaseShape<'html', { w: number; h: number, code: string }>
 type OmittedCodeShapeProps = 'rotation' | 'index' | 'parentId' | 'isLocked' | 'opacity' | 'typeName' | 'meta';
@@ -58,8 +50,8 @@ export class CodeShapeUtil extends ShapeUtil<CodeBaseShape> {
 
   component(shape: CodeShape) {
     const [code, setCode] = React.useState(shape.props.code);
-    const run = () => {
-      console.log('running')
+    const handleRun = () => {
+
     }
     return <HTMLContainer id={shape.id} style={{ pointerEvents: 'all' }}>
       <Editor
@@ -78,7 +70,7 @@ export class CodeShapeUtil extends ShapeUtil<CodeBaseShape> {
         }}
       />
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <button type="button" onClick={run}>Run</button>
+        <button type="button" onClick={handleRun}>Run</button>
       </div>
     </HTMLContainer>;
   }

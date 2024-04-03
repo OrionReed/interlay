@@ -26,10 +26,20 @@ export const overrides: TLUiOverrides = {
 		tools.recompose = {
 			id: 'recompose',
 			icon: 'color',
-			label: 'recompose',
+			label: 'Recompose',
 			kbd: 'z',
 			onSelect: () => {
 				editor.setCurrentTool('recompose')
+			},
+		}
+		tools.llm = {
+			id: 'llm',
+			icon: 'text',
+			label: 'LLM',
+			kbd: 's',
+			onSelect: () => {
+				console.log('selecting llm tool');
+				editor.setCurrentTool('llm')
 			},
 		}
 		return tools

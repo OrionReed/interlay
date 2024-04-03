@@ -17,8 +17,9 @@ import { CodeTool } from '@/tools/CodeTool';
 import { colorIsDark } from '@/utils/colorIsDark';
 import { DecomposeTool } from '@/tools/DecomposeTool';
 import { RecomposeTool } from '@/tools/RecomposeTool';
+import { LLMTool } from '@/tools/LLMTool';
 
-const tools = [CodeTool, DecomposeTool, RecomposeTool]
+const tools = [CodeTool, DecomposeTool, RecomposeTool, LLMTool]
 const shapeUtils = [HTMLShapeUtil, CodeShapeUtil]
 const root = createRoot();
 root.render(<App />);
