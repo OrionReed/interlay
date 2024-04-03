@@ -1,4 +1,4 @@
-import { TLArrowShape, TLGeoShape, TLShape, TLShapePartial, VecLike, createShapeId } from '@tldraw/tldraw'
+import { TLArrowShape, TLGeoShape, TLShape, TLShapeId, TLShapePartial, TLUnknownShape, VecLike, createShapeId } from '@tldraw/tldraw'
 import { StateNode } from 'tldraw'
 import { generateText } from '@/systems/generateText'
 import { HTMLBaseShape } from '@/shapes/HTMLShapeUtil'
@@ -54,20 +54,7 @@ export class LLMTool extends StateNode {
       if (arrow.props.end.type === 'binding') {
         endShape = this.editor.getShape(arrow.props.end.boundShapeId)
       } else if (arrow.props.end.type === 'point') {
-        const w = 200
-        const h = 150
-        const newShape: TLShapePartial<TLGeoShape> = {
-          id: createShapeId(),
-          type: 'geo',
-          x: arrow.props.end.x - w / 2,
-          y: arrow.props.end.y - h / 2,
-          props: {
-            w: w,
-            h: w,
-            text: '⏳',
-            size: "s",
-          }
-        }
+        const newShape = createGeoShapeAtPoint(arrow.props.end)
         this.editor.createShape(newShape)
         endShape = newShape
       }
@@ -77,24 +64,11 @@ export class LLMTool extends StateNode {
         input = indirectStartShapeContent.join(' ')
       }
       else {
+        //@ts-ignore
         input = startShape.props.html || startShape.props.text
       }
-      const geoShapePartial: TLShapePartial<TLGeoShape> = {
-        id: endShape.id,
-        type: 'geo',
-        props: {
-          text: '⏳',
-          size: "s",
-          font: 'sans'
-        }
-      }
-      const htmlShapePartial: TLShapePartial<HTMLBaseShape> = {
-        id: endShape.id,
-        type: 'html',
-        props: {
-          html: '⏳',
-        }
-      }
+      const geoShapePartial = getGeoShapePartial(endShape)
+      const htmlShapePartial = getHtmlShapePartial(endShape)
       this.editor.updateShape(geoShapePartial)
       const updateGeoShape = (newText: string) => {
         this.editor.updateShape({
@@ -130,22 +104,7 @@ export class LLMTool extends StateNode {
         htmlShapePartial.id = replacementShape.id
         this.editor.createShape(replacementShape)
         this.editor.deleteShape(endShape.id)
-        const arrowUpdate: TLShapePartial<TLArrowShape> = {
-          id: arrow.id,
-          type: 'arrow',
-          props: {
-            end: {
-              type: 'binding',
-              boundShapeId: replacementShape.id,
-              normalizedAnchor: {
-                x: 0.5,
-                y: 0.5
-              },
-              isExact: false,
-              isPrecise: true
-            }
-          }
-        }
+        const arrowUpdate = bindAndGetArrow(arrow.id, replacementShape.id)
         this.editor.updateShape(arrowUpdate)
       }
       const prompt = getSystemPrompt(isTargetHTML ? 'html' : 'text')
@@ -168,5 +127,61 @@ function getSystemPrompt(type: 'html' | 'text') {
 
   return basePrompt + (type === 'html' ? htmlPrompt : textPrompt)
 
+}
+
+function createGeoShapeAtPoint(point: VecLike, w = 300, h = 150): TLShapePartial<TLGeoShape> {
+  return {
+    id: createShapeId(),
+    type: 'geo',
+    x: point.x - w / 2,
+    y: point.y - h / 2,
+    props: {
+      w: w,
+      h: h,
+      text: '⏳',
+      size: "s",
+    }
+  }
+}
+
+function getGeoShapePartial(endShape: TLShapePartial<TLShape>): TLShapePartial<TLGeoShape> {
+  return {
+    id: endShape.id,
+    type: 'geo',
+    props: {
+      text: '⏳',
+      size: "s",
+      font: 'sans'
+    }
+  }
+}
+
+function getHtmlShapePartial(endShape: TLShapePartial<TLShape>): TLShapePartial<HTMLBaseShape> {
+  return {
+    id: endShape.id,
+    type: 'html',
+    props: {
+      html: '⏳',
+    }
+  }
+}
+
+function bindAndGetArrow(id: TLShapeId, bindTo: TLShapeId): TLShapePartial<TLArrowShape> {
+  return {
+    id,
+    type: 'arrow',
+    props: {
+      end: {
+        type: 'binding',
+        boundShapeId: bindTo,
+        normalizedAnchor: {
+          x: 0.5,
+          y: 0.5
+        },
+        isExact: false,
+        isPrecise: true
+      }
+    }
+  }
 }
 
