@@ -1,9 +1,6 @@
 {
   "{{chrome}}.manifest_version": 3,
   "{{firefox}}.manifest_version": 2,
-  "name": "Interlay",
-  "version": "0.1",
-  "description": "Augment the web with new interface affordances.",
   "icons": {
     "128": "icon/interlay-128.png"
   },
@@ -37,12 +34,8 @@
       "src/background.js"
     ]
   },
-  "{{chrome}}.action": {
-    "default_popup": "popup/index.html",
-    "default_title": "Interlay"
-  },
-  "{{firefox}}.browser_action": {
-    "128": "icon/interlay-128.png",
+  "browser_action": {
+    "default_icon": "icon/interlay-128.png",
     "default_title": "Interlay"
   }
 }
