@@ -12,7 +12,7 @@ export const components: TLComponents = {
 	HelpMenu: null,
 	PageMenu: null,
 	NavigationPanel: null,
-	ContextMenu: null,
+	// ContextMenu: null,
 	ActionsMenu: null,
 	QuickActions: null,
 	MainMenu: null,

@@ -1,7 +1,5 @@
-import { htmlToShape } from '@/utils/html'
-import { HTMLShape, HTMLBaseShape } from '@/shapes/HTMLShapeUtil'
-import { generate, useGenerateText } from '@/systems/hooks/useGenerateText'
-import { TLArrowShape, TLGeoShape, TLShape, TLShapePartial, TLUnknownShape, VecLike } from '@tldraw/tldraw'
+import { generate } from '@/systems/hooks/useGenerateText'
+import { TLArrowShape, TLGeoShape, TLShape, TLShapePartial, VecLike } from '@tldraw/tldraw'
 import { StateNode } from 'tldraw'
 
 export class LLMTool extends StateNode {
