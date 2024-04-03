@@ -1,10 +1,11 @@
 {
-  "manifest_version": 3,
+  "{{chrome}}.manifest_version": 3,
+  "{{firefox}}.manifest_version": 2,
   "name": "Interlay",
   "version": "0.1",
   "description": "Augment the web with new interface affordances.",
   "icons": {
-    "128": "icons/interlay-128.png"
+    "128": "icon/interlay-128.png"
   },
   "browser_specific_settings": {
     "gecko": {
@@ -18,10 +19,10 @@
         "<all_urls>"
       ],
       "js": [
-        "dist/index.js"
+        "src/App.tsx"
       ],
       "css": [
-        "dist/index.css"
+        "src/style.css"
       ]
     }
   ],
@@ -33,11 +34,15 @@
   ],
   "background": {
     "scripts": [
-      "dist/background.js"
+      "src/background.js"
     ]
   },
-  "action": {
-    "default_icon": "icons/interlay-128.png",
+  "{{chrome}}.action": {
+    "default_popup": "popup/index.html",
+    "default_title": "Interlay"
+  },
+  "{{firefox}}.browser_action": {
+    "128": "icon/interlay-128.png",
     "default_title": "Interlay"
   }
 }

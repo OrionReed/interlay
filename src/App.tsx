@@ -18,6 +18,10 @@ import { colorIsDark } from '@/utils/colorIsDark';
 import { DecomposeTool } from '@/tools/DecomposeTool';
 import { RecomposeTool } from '@/tools/RecomposeTool';
 import { LLMTool } from '@/tools/LLMTool';
+// import { useVectorstore } from '@/systems/hooks/useVectorstore'
+
+// testing
+// useVectorstore()
 
 const tools = [CodeTool, DecomposeTool, RecomposeTool, LLMTool]
 const shapeUtils = [HTMLShapeUtil, CodeShapeUtil]
