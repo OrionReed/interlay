@@ -18,10 +18,8 @@ import { colorIsDark } from '@/utils/colorIsDark';
 import { DecomposeTool } from '@/tools/DecomposeTool';
 import { RecomposeTool } from '@/tools/RecomposeTool';
 import { LLMTool } from '@/tools/LLMTool';
-// import { useVectorstore } from '@/systems/hooks/useVectorstore'
-
-// testing
-// useVectorstore()
+// import { getAssetUrlsByMetaUrl } from '@tldraw/assets/urls'
+// const assets = getAssetUrlsByMetaUrl()
 
 const tools = [CodeTool, DecomposeTool, RecomposeTool, LLMTool]
 const shapeUtils = [HTMLShapeUtil, CodeShapeUtil]
@@ -54,6 +52,7 @@ function App() {
 			<div className="tldraw__editor">
 				<Tldraw
 					tools={tools}
+					// assetUrls={assets}
 					overrides={overrides}
 					components={components}
 					shapeUtils={shapeUtils}
@@ -66,7 +65,6 @@ function App() {
 			</div>
 		</React.StrictMode>
 	)
-
 }
 
 function getDefaultUserPreferences(): TLUserPreferences {

@@ -12,6 +12,7 @@
 		"preview": "tsc && vite build --base=./ && vite preview"
 	},
 	"dependencies": {
+		"@tldraw/assets": "^2.1.0-canary.fba2b0d07631",
 		"@tldraw/tldraw": "2.1.0-canary.fba2b0d07631",
 		"openai": "^4.32.1",
 		"prismjs": "^1.29.0",

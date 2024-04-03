@@ -52,9 +52,12 @@ export class LLMTool extends StateNode {
       if (arrow.props.end.type === 'binding') {
         endShape = this.editor.getShape(arrow.props.end.boundShapeId)
       } else if (arrow.props.end.type === 'point') {
-        const newShape = createGeoShapeAtPoint(arrow.props.end)
+        const pageSpacePoint = { x: arrow.x + arrow.props.end.x, y: arrow.y + arrow.props.end.y }
+        const newShape = createGeoShapeAtPoint(pageSpacePoint)
         this.editor.createShape(newShape)
         endShape = newShape
+        const arrowUpdate = bindAndGetArrow(arrow.id, newShape.id)
+        this.editor.updateShape(arrowUpdate)
       }
       //@ts-ignore
       let input = ''
@@ -127,12 +130,13 @@ function getSystemPrompt(type: 'html' | 'text') {
 
 }
 
-function createGeoShapeAtPoint(point: VecLike, w = 300, h = 150): TLShapePartial<TLGeoShape> {
+function createGeoShapeAtPoint(point: VecLike, w = 350, h = 200): TLShapePartial<TLGeoShape> {
+
   return {
     id: createShapeId(),
     type: 'geo',
-    x: point.x - w / 2,
-    y: point.y - h / 2,
+    x: point.x - (w / 2),
+    y: point.y - (h / 2),
     props: {
       w: w,
       h: h,
