@@ -20,6 +20,9 @@ export default defineConfig({
           author: pkg.author,
         };
       },
+      webExtConfig: {
+        startUrl: ["https://www.humprog.org/~stephen/", "about:debugging#/runtime/this-firefox"],
+      }
     }),
     viteStaticCopy({
       targets: [

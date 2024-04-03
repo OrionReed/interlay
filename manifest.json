@@ -24,10 +24,17 @@
     }
   ],
   "permissions": [
+    "<all_urls>",
     "activeTab",
     "tabs",
     "scripting",
     "storage"
+  ],
+  "optional_permissions": [
+    "<all_urls>",
+    "activeTab",
+    "tabs",
+    "scripting"
   ],
   "background": {
     "scripts": [
@@ -36,6 +43,7 @@
   },
   "browser_action": {
     "default_icon": "icon/interlay-128.png",
+    "default_area": "navbar",
     "default_title": "Interlay"
   }
 }
