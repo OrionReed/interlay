@@ -36,7 +36,7 @@ export class RecomposeTool extends StateNode {
       props: {
         w: bounds.width,
         h: bounds.height,
-        html: recomposedElement.innerHTML,
+        text: recomposedElement.innerHTML,
       }
     }
     this.editor.createShapes([recomposedShape]);

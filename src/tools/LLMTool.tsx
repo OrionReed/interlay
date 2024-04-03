@@ -43,9 +43,7 @@ export class LLMTool extends StateNode {
               if (arrowShape.props.start.type === 'binding') {
                 const boundShape = this.editor.getShape(arrowShape.props.start.boundShapeId)
                 //@ts-ignore
-                const content = boundShape.props.text || boundShape.props.html
-
-                indirectStartShapeContent.push(content)
+                indirectStartShapeContent.push(boundShape.props.text)
               }
             }
           }
@@ -63,9 +61,9 @@ export class LLMTool extends StateNode {
       if (indirectStartShapeContent.length > 0) {
         input = indirectStartShapeContent.join(' ')
       }
-      else {
+      else if (startShape) {
         //@ts-ignore
-        input = startShape.props.html || startShape.props.text
+        input = startShape.props.text
       }
       const geoShapePartial = getGeoShapePartial(endShape)
       const htmlShapePartial = getHtmlShapePartial(endShape)
@@ -81,12 +79,12 @@ export class LLMTool extends StateNode {
       const updateHtmlShape = (newText: string) => {
         this.editor.updateShape({
           ...htmlShapePartial, props: {
-            ...htmlShapePartial.props, html: newText
+            ...htmlShapePartial.props, text: newText
           }
         })
       }
       //@ts-ignore
-      const isTargetHTML = endShape.props.html !== undefined || arrowText.toLowerCase().includes('html')
+      const isTargetHTML = endShape.type === 'html' || arrowText.toLowerCase().includes('html')
       if (isTargetHTML && endShape.type !== 'html') {
         const replacementShape: TLShapePartial<HTMLBaseShape> = {
           id: createShapeId(),
@@ -98,7 +96,7 @@ export class LLMTool extends StateNode {
             w: endShape.props.w || 100,
             //@ts-ignore
             h: endShape.props.h || 100,
-            html: '⏳',
+            text: '<div>⏳</div>',
           }
         }
         htmlShapePartial.id = replacementShape.id
@@ -122,7 +120,7 @@ export class LLMTool extends StateNode {
 
 function getSystemPrompt(type: 'html' | 'text') {
   const textPrompt = "Your answer should be in plaintext."
-  const htmlPrompt = "Your answer should be in HTML with inline styles. Do not wrap the html in ``` or other marks. It should be formatted correctly for direct use."
+  const htmlPrompt = "Your answer should be in HTML with inline styles. Always use inline javascript when possible. Do not wrap the html in ``` or other markings. It should be formatted correctly for direct use."
   const basePrompt = "You are a helpful assistant. You will be given an instruction and an input which may be HTML or plaintext."
 
   return basePrompt + (type === 'html' ? htmlPrompt : textPrompt)
@@ -161,7 +159,7 @@ function getHtmlShapePartial(endShape: TLShapePartial<TLShape>): TLShapePartial<
     id: endShape.id,
     type: 'html',
     props: {
-      html: '⏳',
+      text: '⏳',
     }
   }
 }

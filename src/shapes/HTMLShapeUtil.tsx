@@ -1,7 +1,7 @@
 import { Rectangle2d, resizeBox, TLBaseShape, TLOnBeforeUpdateHandler, TLOnResizeHandler } from '@tldraw/tldraw';
 import { ShapeUtil } from 'tldraw'
 
-export type HTMLBaseShape = TLBaseShape<'html', { w: number; h: number, html: string, parentStyle: Record<string, string> }>
+export type HTMLBaseShape = TLBaseShape<'html', { w: number; h: number, text: string, parentStyle: Record<string, string> }>
 type OmittedHTMLShapeProps = 'rotation' | 'index' | 'parentId' | 'isLocked' | 'opacity' | 'typeName' | 'meta';
 
 export type HTMLShape = Omit<HTMLBaseShape, OmittedHTMLShapeProps>;
@@ -19,7 +19,7 @@ export class HTMLShapeUtil extends ShapeUtil<HTMLBaseShape> {
     return {
       w: 100,
       h: 100,
-      html: "",
+      text: "",
       parentStyle: {}
     }
   }
@@ -55,8 +55,8 @@ export class HTMLShapeUtil extends ShapeUtil<HTMLBaseShape> {
 
   component(shape: HTMLShape) {
     const parentStyle = shape.props.parentStyle;
-    const html = shape.props.html;
-    return <div id={shape.id} dangerouslySetInnerHTML={{ __html: html }} style={parentStyle} className="html-shape-container" />;
+    const html = shape.props.text;
+    return <div id={shape.id} dangerouslySetInnerHTML={{ __html: html }} style={{ ...parentStyle, pointerEvents: 'all' }} className="html-shape-container" />;
   }
 
   indicator(shape: HTMLShape) {

@@ -43,7 +43,7 @@ export function htmlToShape(element: HTMLElement, viewOffset: VecLike = { x: 0, 
     props: {
       w: rect.width,
       h: rect.height,
-      html: element.outerHTML,
+      text: element.outerHTML,
       parentStyle: parentStyle
     }
   };

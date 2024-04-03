@@ -41,11 +41,6 @@ export class DecomposeTool extends StateNode {
       for (const child of children) {
         this.editor.createShapes([htmlToShape(child as HTMLElement, { x: view.minX, y: view.minY })])
       }
-
-      // const htmlShape = shape as HTMLBaseShape;
-      // const html = htmlShape.props.html;
-
-      // this.editor.createShapes([htmlShape]); // Assuming you meant to add the individual shape
       this.editor.deleteShape(shape.id);
     }
   }
