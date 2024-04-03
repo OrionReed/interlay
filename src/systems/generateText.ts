@@ -10,7 +10,6 @@ export async function generateText(
   systemPrompt: string,
   onToken: (partialResponse: string) => void
 ) {
-  console.log('starting prompt');
 
   let partial = '';
   const stream = await openai.chat.completions.create({
@@ -19,7 +18,6 @@ export async function generateText(
     stream: true,
   });
   for await (const chunk of stream) {
-    console.log('chunk', chunk)
     partial += chunk.choices[0]?.delta?.content || ''
     onToken(partial);
   }

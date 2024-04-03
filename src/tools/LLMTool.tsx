@@ -6,6 +6,8 @@ import { HTMLBaseShape } from '@/shapes/HTMLShapeUtil'
 export class LLMTool extends StateNode {
   static override id = 'llm'
 
+
+
   override onEnter = () => {
     const selectedShapes = this.editor.getSelectedShapes()
     if (selectedShapes.length === 0) return
@@ -24,12 +26,30 @@ export class LLMTool extends StateNode {
 
   process = (arrows: TLArrowShape[]) => {
     for (const arrow of arrows) {
-      console.log('arrow', arrow)
       let startShape: TLShapePartial<TLShape> | undefined;
+      const indirectStartShapeContent: TLShapePartial<TLShape>[] = []
       let endShape: TLShapePartial<TLShape> | undefined;
       const arrowText = arrow.props.text
       if (arrow.props.start.type === 'binding') {
         startShape = this.editor.getShape(arrow.props.start.boundShapeId)
+        //@ts-ignore
+        if (startShape.type === 'geo' && startShape.props.text === '') {
+          const indirectArrows = this.editor.getArrowsBoundTo(startShape.id)
+          for (const indirectArrow of indirectArrows) {
+
+            if (indirectArrow.handleId === 'end') {
+              const arrowId = this.editor.getShape(indirectArrow.arrowId)
+              const arrowShape = this.editor.getShape(arrowId) as TLArrowShape
+              if (arrowShape.props.start.type === 'binding') {
+                const boundShape = this.editor.getShape(arrowShape.props.start.boundShapeId)
+                //@ts-ignore
+                const content = boundShape.props.text || boundShape.props.html
+
+                indirectStartShapeContent.push(content)
+              }
+            }
+          }
+        }
       }
       if (arrow.props.end.type === 'binding') {
         endShape = this.editor.getShape(arrow.props.end.boundShapeId)
@@ -51,7 +71,14 @@ export class LLMTool extends StateNode {
         this.editor.createShape(newShape)
         endShape = newShape
       }
-      const input = startShape.props.html || startShape.props.text || ''
+      //@ts-ignore
+      let input = ''
+      if (indirectStartShapeContent.length > 0) {
+        input = indirectStartShapeContent.join(' ')
+      }
+      else {
+        input = startShape.props.html || startShape.props.text
+      }
       const geoShapePartial: TLShapePartial<TLGeoShape> = {
         id: endShape.id,
         type: 'geo',
@@ -84,6 +111,7 @@ export class LLMTool extends StateNode {
           }
         })
       }
+      //@ts-ignore
       const isTargetHTML = endShape.props.html !== undefined || arrowText.toLowerCase().includes('html')
       if (isTargetHTML && endShape.type !== 'html') {
         const replacementShape: TLShapePartial<HTMLBaseShape> = {
@@ -92,8 +120,10 @@ export class LLMTool extends StateNode {
           y: endShape.y,
           type: 'html',
           props: {
-            w: endShape.props.w,
-            h: endShape.props.h,
+            //@ts-ignore
+            w: endShape.props.w || 100,
+            //@ts-ignore
+            h: endShape.props.h || 100,
             html: '⏳',
           }
         }
