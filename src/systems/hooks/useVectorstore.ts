@@ -1,49 +1,50 @@
-import * as vectordb from 'vectordb';
-import { pipeline } from '@xenova/transformers';
+import { useState, useEffect } from 'react';
+import { ChromaClient, OpenAIEmbeddingFunction, DefaultEmbeddingFunction, Collection } from 'chromadb';
+// import { pipeline } from '@xenova/transformers';
+// const extractor = pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2');
 
-export async function useVectorstore() {
-  const pipe = await pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2');
+// Create a feature-extraction pipeline
+// const embedder = new OpenAIEmbeddingFunction({
+//   openai_api_key: import.meta.env.VITE_OPENAI_API_KEY,
+//   ope
+// });
 
-  // Define the function. `sourceColumn` is required for LanceDB to know
-  // which column to use as input.
-  const embed_fun: any = {}
-  embed_fun.sourceColumn = 'text'
-  embed_fun.embed = async (batch) => {
-    const result = []
-    // Given a batch of strings, we will use the `pipe` function to get
-    // the vector embedding of each string.
-    for (const text of batch) {
-      // 'mean' pooling and normalizing allows the embeddings to share the
-      // same length.
-      const res = await pipe(text, { pooling: 'mean', normalize: true })
-      result.push(Array.from(res.data))
-    }
-    return (result)
-  }
+export const useChroma = () => {
+  const [client, setClient] = useState<ChromaClient | null>(null);
+  const [collection, setCollection] = useState<Collection | null>(null);
+  const embedder = new DefaultEmbeddingFunction();
 
-  // Link a folder and create a table with data
-  const db = await vectordb.connect('data/sample-lancedb')
+  useEffect(() => {
+    const initChromaClient = async () => {
+      const chromaClient = new ChromaClient({ path: "http://localhost:8000" });
+      chromaClient.reset();
+      const chromaCollection = await chromaClient.getOrCreateCollection({ name: "sample_collection", embeddingFunction: embedder });
+      setClient(chromaClient);
+      setCollection(chromaCollection);
+    };
 
-  // You can also import any other data, but make sure that you have a column
-  // for the embedding function to use.
-  const data = [
-    { id: 1, text: 'Cherry', type: 'fruit' },
-    { id: 2, text: 'Carrot', type: 'vegetable' },
-    { id: 3, text: 'Potato', type: 'vegetable' },
-    { id: 4, text: 'Apple', type: 'fruit' },
-    { id: 5, text: 'Banana', type: 'fruit' }
-  ]
+    initChromaClient();
+  }, []);
 
-  // Create the table with the embedding function
-  //@ts-ignore
-  const table = await db.createTable('food_table', data, "create", embed_fun)
+  const embedText = async (text) => {
+    if (!client || !collection) return;
+    await collection.add({
+      documents: [text], // Embedding the text
+      metadatas: [{ source: "user_input" }], // Arbitrary metadata
+      ids: [`${Date.now()}`] // Unique ID for each document, using timestamp for simplicity
+    });
+  };
 
-  // Query the table
-  const results = await table
-    .search("a sweet fruit to eat")
-    //@ts-ignore
-    .metricType("cosine")
-    .limit(2)
-    .execute()
-  console.log(results.map(r => r.text))
-}
+  const similaritySearch = async (queryText) => {
+    if (!client || !collection) return;
+    const results = await collection.query({
+      queryTexts: [queryText],
+      nResults: 5, // Adjust number of results as needed
+      // Optional filters can be added here
+    });
+    console.log('results', results);
+    return results;
+  };
+
+  return { embedText, similaritySearch };
+};

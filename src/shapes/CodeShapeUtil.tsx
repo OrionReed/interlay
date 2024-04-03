@@ -6,7 +6,6 @@ import { highlight, languages } from 'prismjs/components/prism-core';
 import 'prismjs/components/prism-clike';
 import 'prismjs/components/prism-javascript';
 import 'prismjs/themes/prism.css'; //Example style, you can use another
-import { useGenerateText } from '@/systems/hooks/useGenerateText';
 
 type CodeBaseShape = TLBaseShape<'html', { w: number; h: number, code: string }>
 type OmittedCodeShapeProps = 'rotation' | 'index' | 'parentId' | 'isLocked' | 'opacity' | 'typeName' | 'meta';

@@ -1,74 +1,26 @@
 import { useState, useCallback } from 'react';
+import OpenAI from 'openai';
 
-export const useGenerateText = () => {
-  const [response, setResponse] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+const openai = new OpenAI({
+  apiKey: import.meta.env.VITE_OPENAI_API_KEY,
+  dangerouslyAllowBrowser: true,
+});
 
-  const generateText = useCallback(async (prompt) => {
-    setLoading(true);
-    setError(null);
+const basePrompt = "You are a helpful assistant. You will be given an instruction and an input which may contain HTML. Your answer should be in plaintext unless otherwise specified."
 
-    // !! SPICY !!
-    const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
-    const endpoint = "https://api.openai.com/v1/chat/completions";
-    const query = {
-      model: "gpt-4-turbo-preview",
-      stream: false, // :(
-      messages: [
-        { role: "system", content: "You are a helpful assistant. You will be given an instruction and an input which may contain HTML. Your answer should be in plaintext unless otherwise specified." },
-        { role: "user", content: prompt },
-      ],
-    };
-
-    try {
-      const response = await fetch(endpoint, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${apiKey}`,
-        },
-        body: JSON.stringify(query),
-      });
-      const data = await response.json();
-      setResponse(data.choices[0].message.content);
-    } catch (error) {
-      setError(error);
-    } finally {
-      setLoading(false);
-    }
-
-  }, []);
-
-  return { response, loading, error, generateText };
-};
-
-export const generate = async (prompt: string) => {
-  // !! SPICY !!
-  const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
-  const endpoint = "https://api.openai.com/v1/chat/completions";
-  const query = {
-    model: "gpt-4-turbo-preview",
-    stream: false, // :(
-    messages: [
-      { role: "system", content: "You are a helpful assistant. You will be given an instruction and an input which may contain HTML. Your answer should be in plaintext unless otherwise specified." },
-      { role: "user", content: prompt },
-    ],
-  };
-
-  try {
-    const response = await fetch(endpoint, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify(query),
-    });
-    const data = await response.json();
-    const result = data.choices[0].message.content
-    return result
-  } catch (error) {
-    console.error(error)
+export async function generateText(
+  prompt: string,
+  onToken: (partialResponse: string) => void
+) {
+  let partial = '';
+  const stream = await openai.chat.completions.create({
+    model: 'gpt-4-turbo-preview',
+    messages: [{ role: 'system', content: basePrompt }, { role: 'user', content: prompt }],
+    stream: true,
+  });
+  for await (const chunk of stream) {
+    partial += chunk.choices[0]?.delta?.content || ''
+    onToken(partial);
   }
-};
+  onToken(partial);
+}

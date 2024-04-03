@@ -18,10 +18,11 @@ import { colorIsDark } from '@/utils/colorIsDark';
 import { DecomposeTool } from '@/tools/DecomposeTool';
 import { RecomposeTool } from '@/tools/RecomposeTool';
 import { LLMTool } from '@/tools/LLMTool';
-// import { useVectorstore } from '@/systems/hooks/useVectorstore'
-
+import { useChroma } from '@/systems/hooks/useVectorstore'
+// import { vectorStuff } from '@/systems/hooks/useVectorstore'
+// import '@/systems/hooks/useVectorstore'
 // testing
-// useVectorstore()
+// vectorStuff()
 
 const tools = [CodeTool, DecomposeTool, RecomposeTool, LLMTool]
 const shapeUtils = [HTMLShapeUtil, CodeShapeUtil]
@@ -37,6 +38,10 @@ function createRoot() {
 
 function App() {
 	const { isCanvasEnabled, shapes } = useInterlay();
+	const { embedText, similaritySearch } = useChroma();
+
+	embedText('Hello, world!');
+	// similaritySearch('Hi!');
 
 	useEffect(() => {
 		const interlayCanvasRoot = document.getElementById('interlayCanvasRoot');

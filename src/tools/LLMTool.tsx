@@ -1,6 +1,6 @@
 import { htmlToShape } from '@/utils/html'
 import { HTMLShape, HTMLBaseShape } from '@/shapes/HTMLShapeUtil'
-import { generate, useGenerateText } from '@/systems/hooks/useGenerateText'
+import { generateText } from '@/systems/hooks/useGenerateText'
 import { TLArrowShape, TLGeoShape, TLShape, TLShapePartial, TLUnknownShape, VecLike } from '@tldraw/tldraw'
 import { StateNode } from 'tldraw'
 
@@ -26,6 +26,7 @@ export class LLMTool extends StateNode {
 
   process = (arrows: TLArrowShape[]) => {
     for (const arrow of arrows) {
+      console.log(arrow)
       let startShape: TLShape | undefined;
       let endShape: TLShape | undefined;
       let startPos: VecLike | undefined;
@@ -53,16 +54,16 @@ export class LLMTool extends StateNode {
             font: 'sans'
           }
         }
-        this.editor.updateShape(boxShape)
-        const result = generate(`Instruction: ${text}\n\nInput: ${input}`)
-        result.then(res => {
+        const updateShapeText = (text: string) => {
           this.editor.updateShape({
             ...boxShape, props: {
               ...boxShape.props, align: 'start',
-              verticalAlign: 'start', text: res
+              verticalAlign: 'start', text
             }
           })
-        })
+        }
+        this.editor.updateShape(boxShape)
+        generateText(`Instruction: ${text}\n\nInput: ${input}`, updateShapeText)
       }
     }
   }
