@@ -24,7 +24,7 @@ export default defineConfig({
         };
       },
       webExtConfig: {
-        startUrl: ["https://www.humprog.org/~stephen/", "about:debugging#/runtime/this-firefox"],
+        startUrl: ["https://www.humprog.org/~stephen/", "https://theuselessweb.com/", "about:debugging#/runtime/this-firefox"],
       }
     }),
     viteStaticCopy({
