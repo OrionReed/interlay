@@ -1,7 +1,8 @@
 import { HTMLShape } from '@/shapes/HTMLShapeUtil';
 import { VecLike, createShapeId } from '@tldraw/tldraw';
 import { createBoundingBoxFromChildRects, measureElementTextWidth } from '@/utils/measure';
-import { getContainerStyle } from './style';
+import { getComputedStyles } from './style';
+import { uuidv4 } from '@/utils/uuid';
 
 
 export function htmlToShape(element: HTMLElement, viewOffset: VecLike = { x: 0, y: 0 }): HTMLShape {
@@ -32,8 +33,11 @@ export function htmlToShape(element: HTMLElement, viewOffset: VecLike = { x: 0, 
 
   let parentStyle: Record<string, string> = {};
   if (element.parentElement) {
-    parentStyle = getContainerStyle(element.parentElement);
+    parentStyle = getComputedStyles(element.parentElement);
   }
+
+  const interlayId = uuidv4();
+  element.setAttribute('data-interlay-id', interlayId);
 
   return {
     id: createShapeId(),
@@ -44,7 +48,8 @@ export function htmlToShape(element: HTMLElement, viewOffset: VecLike = { x: 0, 
       w: rect.width,
       h: rect.height,
       text: element.outerHTML,
-      parentStyle: parentStyle
+      parentStyle: parentStyle,
+      interlayId: interlayId
     }
   };
 }

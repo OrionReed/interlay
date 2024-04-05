@@ -4,6 +4,7 @@ import { viteStaticCopy } from 'vite-plugin-static-copy'
 import webExtension, { readJsonFile } from "vite-plugin-web-extension"
 
 export default defineConfig({
+  mode: 'development',
   optimizeDeps: {
     exclude: ['@tldraw/assets'],
   },
