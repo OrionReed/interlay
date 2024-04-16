@@ -1,6 +1,6 @@
 import { TLArrowShape, TLGeoShape, TLShape, TLShapeId, TLShapePartial, TLUnknownShape, VecLike, createShapeId } from '@tldraw/tldraw'
 import { StateNode } from 'tldraw'
-import { generateText } from '@/systems/generateText'
+import { generateText } from '@/utils/generateText'
 import { HTMLBaseShape } from '@/shapes/HTMLShapeUtil'
 
 export class LLMTool extends StateNode {
@@ -88,7 +88,8 @@ export class LLMTool extends StateNode {
       }
       //@ts-ignore
       const isTargetHTML = endShape.type === 'html' || arrowText.toLowerCase().includes('html')
-      if (isTargetHTML && endShape.type !== 'html') {
+      const isTargetUI = endShape.type === 'html' || arrowText.toLowerCase().includes('ui')
+      if ((isTargetHTML || isTargetUI) && endShape.type !== 'html') {
         const replacementShape: TLShapePartial<HTMLBaseShape> = {
           id: createShapeId(),
           x: endShape.x,
@@ -108,9 +109,13 @@ export class LLMTool extends StateNode {
         const arrowUpdate = bindAndGetArrow(arrow.id, replacementShape.id)
         this.editor.updateShape(arrowUpdate)
       }
-      const prompt = getSystemPrompt(isTargetHTML ? 'html' : 'text')
+      let prompt = getSystemPrompt(isTargetHTML ? 'html' : 'text')
+      if (isTargetUI) {
+        prompt = getSystemPrompt('ui')
+      }
+      console.log("prompt", prompt)
       const updateFunc = (text: string) => {
-        if (isTargetHTML) {
+        if (isTargetHTML || isTargetUI) {
           updateHtmlShape(text)
         } else {
           updateGeoShape(text)
@@ -121,13 +126,15 @@ export class LLMTool extends StateNode {
   }
 }
 
-function getSystemPrompt(type: 'html' | 'text') {
+function getSystemPrompt(type: 'html' | 'text' | 'ui') {
   const textPrompt = "Your answer should be in plaintext."
-  const htmlPrompt = "Your answer should be in HTML with inline styles. Always use inline javascript when possible. Do not wrap the html in ``` or other markings. It should be formatted correctly for direct use."
-  const basePrompt = "You are a helpful assistant. You will be given an instruction and an input which may be HTML or plaintext."
+  const htmlPrompt = "Your answer should be in HTML with inline styles. Do not wrap the html in ``` or other markings. It should be formatted correctly for direct insertion as inner HTML."
+  const uiPrompt = "Your answer should be in HTML with inline styles. Your task is to make a UI based on the instruction and the input. Do not your response in ``` or other markings. Use id attributes to identify elements and document.querySelector to attach event listeners. Avoid using inline event handlers like onClick within the HTML. Script tags will be executed after content is already loaded. DO NOT wrap code in any event listeners like 'DOMContentLoaded'"
+  const basePrompt = "You are a helpful assistant. You will be given an instruction and an input which may be HTML or plaintext. "
 
-  return basePrompt + (type === 'html' ? htmlPrompt : textPrompt)
-
+  if (type === 'html') return basePrompt + htmlPrompt
+  if (type === 'text') return basePrompt + textPrompt
+  if (type === 'ui') return basePrompt + uiPrompt
 }
 
 function createGeoShapeAtPoint(point: VecLike, w = 350, h = 200): TLShapePartial<TLGeoShape> {

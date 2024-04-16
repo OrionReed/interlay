@@ -5,7 +5,7 @@ import {
 } from '@tldraw/tldraw'
 import "@tldraw/tldraw/tldraw.css";
 import "@/style.css"
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom/client";
 import { useInterlay } from "@/hooks/useInterlay"
 import { Tldraw } from "@tldraw/tldraw";
@@ -18,8 +18,6 @@ import { colorIsDark } from '@/utils/colorIsDark';
 import { DecomposeTool } from '@/tools/DecomposeTool';
 import { RecomposeTool } from '@/tools/RecomposeTool';
 import { LLMTool } from '@/tools/LLMTool';
-// import { getAssetUrlsByMetaUrl } from '@tldraw/assets/urls'
-// const assets = getAssetUrlsByMetaUrl()
 
 const tools = [CodeTool, DecomposeTool, RecomposeTool, LLMTool]
 const shapeUtils = [HTMLShapeUtil, CodeShapeUtil]
@@ -27,24 +25,37 @@ const root = createRoot();
 root.render(<App />);
 
 function createRoot() {
-	const container = document.createElement('div');
-	container.id = 'interlayCanvasRoot';
-	document.body.appendChild(container);
+	let container = document.getElementById('interlayCanvasRoot');
+	if (!container) {
+		container = document.createElement('div');
+		container.id = 'interlayCanvasRoot';
+		document.body.appendChild(container);
+	}
 	return ReactDOM.createRoot(container);
 }
 
 function App() {
 	const { isCanvasEnabled, shapes } = useInterlay();
+	const [editor, setEditor] = useState<Editor | null>(null);
 
 	useEffect(() => {
-		const interlayCanvasRoot = document.getElementById('interlayCanvasRoot');
-		if (interlayCanvasRoot) {
-			interlayCanvasRoot.style.display = isCanvasEnabled ? 'block' : 'none';
+		if (isCanvasEnabled && editor) {
+			setUserPreferences(getDefaultUserPreferences());
+			editor.createShapes(shapes);
 		}
-	}, [isCanvasEnabled]);
+	}, [isCanvasEnabled, editor, shapes]);
+
+	useEffect(() => {
+		return () => {
+			if (editor) {
+				editor.dispose();
+				setEditor(null);
+			}
+		};
+	}, [editor]);
 
 	if (!isCanvasEnabled) {
-		return null
+		return null;
 	}
 
 	return (
@@ -52,14 +63,10 @@ function App() {
 			<div className="tldraw__editor">
 				<Tldraw
 					tools={tools}
-					// assetUrls={assets}
 					overrides={overrides}
 					components={components}
 					shapeUtils={shapeUtils}
-					onMount={(editor: Editor) => {
-						setUserPreferences(getDefaultUserPreferences())
-						editor.createShapes(shapes)
-					}}
+					onMount={setEditor}
 				>
 				</Tldraw>
 			</div>

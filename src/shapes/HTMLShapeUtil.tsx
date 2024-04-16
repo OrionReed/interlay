@@ -1,4 +1,5 @@
 import { Rectangle2d, resizeBox, TLBaseShape, TLOnBeforeUpdateHandler, TLOnResizeHandler } from '@tldraw/tldraw';
+import { useEffect, useRef } from 'react';
 import { ShapeUtil } from 'tldraw'
 
 export type HTMLBaseShape = TLBaseShape<'html', { w: number; h: number, text: string, parentStyle: Record<string, string> }>
@@ -54,9 +55,43 @@ export class HTMLShapeUtil extends ShapeUtil<HTMLBaseShape> {
   }
 
   component(shape: HTMLShape) {
-    const parentStyle = shape.props.parentStyle;
-    const html = shape.props.text;
-    return <div id={shape.id} dangerouslySetInnerHTML={{ __html: html }} style={{ ...parentStyle, pointerEvents: 'all' }} className="html-shape-container" />;
+    const DynamicHTMLContent = ({ html, parentStyle }) => {
+      const containerRef = useRef<HTMLDivElement>(null);
+
+      useEffect(() => {
+        const executeScripts = () => {
+          const scripts = containerRef.current.querySelectorAll('script');
+          for (const script of scripts) {
+            const newScript = document.createElement('script');
+            // Copy all attributes from the original script to the new script
+            [...script.attributes].forEach(attr => newScript.setAttribute(attr.name, attr.value));
+            newScript.async = false; // Ensure scripts are executed in the order they are defined
+            newScript.textContent = script.innerText;
+
+            document.body.appendChild(newScript); // Append to body to ensure execution
+
+            // Optionally, remove the script after execution if not needed
+            newScript.parentNode.removeChild(newScript);
+          }
+        };
+
+        if (containerRef.current) {
+          // Execute any scripts after a slight delay to ensure they are processed after HTML is fully loaded
+          setTimeout(executeScripts, 0);
+        }
+      }, [html]); // Re-run this effect if html changes
+
+      return (
+        <div
+          ref={containerRef}
+          dangerouslySetInnerHTML={{ __html: html }}
+          style={{ ...parentStyle, pointerEvents: 'all' }}
+          className="html-shape-container"
+        />
+      );
+    };
+
+    return <DynamicHTMLContent html={shape.props.text} parentStyle={shape.props.parentStyle} />;
   }
 
   indicator(shape: HTMLShape) {
