@@ -33,6 +33,10 @@ export default defineConfig({
           // !! CAREFUL WITH THIS ONE !!
           src: '.env',
           dest: '.'
+        },
+        {
+          src: 'src/icon',
+          dest: '.'
         }
       ]
     })
