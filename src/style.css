@@ -43,3 +43,19 @@
   overflow: hidden;
   background-color: white;
 }
+
+@keyframes pulsateShadow {
+  0% {
+    box-shadow: 0 0 5px 5px rgba(255, 200, 63, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 5px 10px rgba(255, 200, 63, 0.7);
+  }
+  100% {
+    box-shadow: 0 0 5px 5px rgba(255, 200, 63, 0.2);
+  }
+}
+
+.is-processing {
+  animation: pulsateShadow 2s infinite;
+}

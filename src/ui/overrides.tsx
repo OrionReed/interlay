@@ -38,7 +38,6 @@ export const overrides: TLUiOverrides = {
 			label: 'LLM',
 			kbd: 's',
 			onSelect: () => {
-				console.log('selecting llm tool');
 				editor.setCurrentTool('llm')
 			},
 		}

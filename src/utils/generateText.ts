@@ -8,7 +8,7 @@ const openai = new OpenAI({
 export async function generateText(
   userPrompt: string,
   systemPrompt: string,
-  onToken: (partialResponse: string) => void
+  onToken: (partialResponse: string, done: boolean) => void
 ) {
 
   let partial = '';
@@ -19,7 +19,8 @@ export async function generateText(
   });
   for await (const chunk of stream) {
     partial += chunk.choices[0]?.delta?.content || ''
-    onToken(partial);
+    onToken(partial, false);
   }
-  onToken(partial);
+  console.log('Generated:', partial);
+  onToken(partial, true);
 }

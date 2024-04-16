@@ -79,10 +79,10 @@ export class LLMTool extends StateNode {
           }
         })
       }
-      const updateHtmlShape = (newText: string) => {
+      const updateHtmlShape = (newText: string, done: boolean) => {
         this.editor.updateShape({
           ...htmlShapePartial, props: {
-            ...htmlShapePartial.props, text: newText
+            ...htmlShapePartial.props, text: newText, isProcessing: !done
           }
         })
       }
@@ -113,15 +113,13 @@ export class LLMTool extends StateNode {
       if (isTargetUI) {
         prompt = getSystemPrompt('ui')
       }
-      console.log("prompt", prompt)
-      const updateFunc = (text: string) => {
+      const updateFunc = (text: string, done: boolean) => {
         if (isTargetHTML || isTargetUI) {
-          updateHtmlShape(text)
+          updateHtmlShape(text, done)
         } else {
           updateGeoShape(text)
         }
       }
-      console.log("input", input)
       generateText(`Instruction: ${arrowText}\n\nInput: ${input}\n\nContainer ID: ${startShape.id}`, prompt, updateFunc)
     }
   }

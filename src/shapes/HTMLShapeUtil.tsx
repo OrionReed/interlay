@@ -2,7 +2,7 @@ import { Rectangle2d, resizeBox, TLBaseShape, TLOnBeforeUpdateHandler, TLOnResiz
 import { useEffect, useRef } from 'react';
 import { ShapeUtil } from 'tldraw'
 
-export type HTMLBaseShape = TLBaseShape<'html', { w: number; h: number, text: string, parentStyle: Record<string, string> }>
+export type HTMLBaseShape = TLBaseShape<'html', { w: number; h: number, text: string, parentStyle: Record<string, string>, isProcessing: boolean }>
 type OmittedHTMLShapeProps = 'rotation' | 'index' | 'parentId' | 'isLocked' | 'opacity' | 'typeName' | 'meta';
 
 export type HTMLShape = Omit<HTMLBaseShape, OmittedHTMLShapeProps>;
@@ -21,7 +21,8 @@ export class HTMLShapeUtil extends ShapeUtil<HTMLBaseShape> {
       w: 100,
       h: 100,
       text: "",
-      parentStyle: {}
+      parentStyle: {},
+      isProcessing: false
     }
   }
 
@@ -38,12 +39,24 @@ export class HTMLShapeUtil extends ShapeUtil<HTMLBaseShape> {
     if (element) {
       const isOverflowing = element.scrollWidth > width || element.scrollHeight > height;
       if (isOverflowing) {
-        element.parentElement?.classList.add('overflowing');
+        this.addParentClass(shape, 'overflowing');
       } else {
-        element.parentElement?.classList.remove('overflowing');
+        this.removeParentClass(shape, 'overflowing');
       }
     }
     return resizeBox(shape, info)
+  }
+
+  addParentClass(shape: HTMLShape, className: string) {
+    const element = document.getElementById(shape.id);
+    if (!element || !element.parentElement) return;
+    element.parentElement.classList.add(className);
+  }
+
+  removeParentClass(shape: HTMLShape, className: string) {
+    const element = document.getElementById(shape.id);
+    if (!element || !element.parentElement) return;
+    element.parentElement.classList.remove(className);
   }
 
   getGeometry(shape: HTMLShape) {
@@ -55,10 +68,16 @@ export class HTMLShapeUtil extends ShapeUtil<HTMLBaseShape> {
   }
 
   component(shape: HTMLShape) {
-    const DynamicHTMLContent = ({ html, parentStyle }) => {
-      const containerRef = useRef<HTMLDivElement>(null);
-
+    const DynamicHTMLContent = ({ isProcessing, html, parentStyle }) => {
+      const containerRef = useRef<HTMLDivElement | null>(null);
+      if (shape.props.isProcessing) {
+        this.addParentClass(shape, 'is-processing');
+      }
+      else {
+        this.removeParentClass(shape, 'is-processing');
+      }
       useEffect(() => {
+        if (isProcessing) return
         const executeScripts = () => {
           const scripts = containerRef.current.querySelectorAll('script');
           for (const script of scripts) {
@@ -79,7 +98,7 @@ export class HTMLShapeUtil extends ShapeUtil<HTMLBaseShape> {
           // Execute any scripts after a slight delay to ensure they are processed after HTML is fully loaded
           setTimeout(executeScripts, 0);
         }
-      }, [html]); // Re-run this effect if html changes
+      }, [html, isProcessing]); // Re-run this effect if html changes
 
       return (
         <div
@@ -92,7 +111,7 @@ export class HTMLShapeUtil extends ShapeUtil<HTMLBaseShape> {
       );
     };
 
-    return <DynamicHTMLContent html={shape.props.text} parentStyle={shape.props.parentStyle} />;
+    return <DynamicHTMLContent isProcessing={shape.props.isProcessing} html={shape.props.text} parentStyle={shape.props.parentStyle} />;
   }
 
   indicator(shape: HTMLShape) {
