@@ -109,9 +109,9 @@ export class LLMTool extends StateNode {
         const arrowUpdate = bindAndGetArrow(arrow.id, replacementShape.id)
         this.editor.updateShape(arrowUpdate)
       }
-      let prompt = getSystemPrompt(isTargetHTML ? 'html' : 'text')
+      let systempPrompt = getSystemPrompt(isTargetHTML ? 'html' : 'text')
       if (isTargetUI) {
-        prompt = getSystemPrompt('ui')
+        systempPrompt = getSystemPrompt('ui')
       }
       const updateFunc = (text: string, done: boolean) => {
         if (isTargetHTML || isTargetUI) {
@@ -120,7 +120,7 @@ export class LLMTool extends StateNode {
           updateGeoShape(text)
         }
       }
-      generateText(`Instruction: ${arrowText}\n\nInput: ${input}\n\nContainer ID: ${startShape.id}`, prompt, updateFunc)
+      generateText(`Instruction:\n ${arrowText}\n\nContainer ID: ${startShape.id}\n\nInput:\n\`\`\`\n${input}\n\`\`\`\n`, systempPrompt, updateFunc)
     }
   }
 }

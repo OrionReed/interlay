@@ -11,6 +11,7 @@ export async function generateText(
   onToken: (partialResponse: string, done: boolean) => void
 ) {
 
+  console.log('Prompt:', userPrompt);
   let partial = '';
   const stream = await openai.chat.completions.create({
     model: 'gpt-4-turbo-preview',
