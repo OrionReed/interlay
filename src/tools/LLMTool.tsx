@@ -121,7 +121,8 @@ export class LLMTool extends StateNode {
           updateGeoShape(text)
         }
       }
-      generateText(`Instruction: ${arrowText}\n\nInput: ${input}`, prompt, updateFunc)
+      console.log("input", input)
+      generateText(`Instruction: ${arrowText}\n\nInput: ${input}\n\nContainer ID: ${startShape.id}`, prompt, updateFunc)
     }
   }
 }
@@ -129,7 +130,7 @@ export class LLMTool extends StateNode {
 function getSystemPrompt(type: 'html' | 'text' | 'ui') {
   const textPrompt = "Your answer should be in plaintext."
   const htmlPrompt = "Your answer should be in HTML with inline styles. Do not wrap the html in ``` or other markings. It should be formatted correctly for direct insertion as inner HTML."
-  const uiPrompt = "Your answer should be in HTML with inline styles. Your task is to make a UI based on the instruction and the input. Do not your response in ``` or other markings. Use id attributes to identify elements and document.querySelector to attach event listeners. Avoid using inline event handlers like onClick within the HTML. Script tags will be executed after content is already loaded. DO NOT wrap code in any event listeners like 'DOMContentLoaded'"
+  const uiPrompt = "Your answer should be in HTML with inline styles. Your task is to make a UI based on the instruction and the input. Do not your response in ``` or other markings. Use id attributes to identify elements and document.querySelector to attach event listeners. Avoid using inline event handlers like onClick within the HTML. Script tags will be executed after content is already loaded. DO NOT wrap code in any event listeners like 'DOMContentLoaded'. The `Input` represents elements which already exist and do not need to be part of your response, only include UI and code should be included. UI should target elements based on the `Container ID`"
   const basePrompt = "You are a helpful assistant. You will be given an instruction and an input which may be HTML or plaintext. "
 
   if (type === 'html') return basePrompt + htmlPrompt

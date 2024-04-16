@@ -87,6 +87,7 @@ export class HTMLShapeUtil extends ShapeUtil<HTMLBaseShape> {
           dangerouslySetInnerHTML={{ __html: html }}
           style={{ ...parentStyle, pointerEvents: 'all' }}
           className="html-shape-container"
+          id={shape.id}
         />
       );
     };
