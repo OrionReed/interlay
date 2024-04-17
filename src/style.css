@@ -59,3 +59,15 @@
 .is-processing {
   animation: pulsateShadow 2s infinite;
 }
+
+.html-pin-button {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
+
+.pinned {
+  position: fixed;
+  top: 0;
+  left: 0;
+}
