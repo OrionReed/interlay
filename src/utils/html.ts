@@ -44,7 +44,8 @@ export function htmlToShape(element: HTMLElement, viewOffset: VecLike = { x: 0, 
       w: rect.width,
       h: rect.height,
       text: element.outerHTML,
-      parentStyle: parentStyle
+      parentStyle: parentStyle,
+      isProcessing: false
     }
   };
 }

@@ -9,6 +9,7 @@
   margin: 0;
   min-height: -webkit-fill-available;
   touch-action: none;
+  pointer-events: none;
 }
 
 .html-shape-container > * {
@@ -28,6 +29,8 @@
 
 .tl-background {
   background-color: transparent;
+  pointer-events: all;
+  touch-action: all;
 }
 
 .tlui-debug-panel {
