@@ -18,7 +18,8 @@
 		"prismjs": "^1.29.0",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",
-		"react-simple-code-editor": "^0.13.1"
+		"react-simple-code-editor": "^0.13.1",
+		"webcola": "^3.4.0"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.4.1",

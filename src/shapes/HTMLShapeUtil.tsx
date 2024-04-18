@@ -87,7 +87,7 @@ export class HTMLShapeUtil extends ShapeUtil<HTMLBaseShape> {
             newScript.async = false; // Ensure scripts are executed in the order they are defined
             newScript.textContent = script.innerText;
 
-            document.body.appendChild(newScript); // Append to body to ensure execution
+            containerRef.current.appendChild(newScript); // Append to body to ensure execution
 
             // Optionally, remove the script after execution if not needed
             newScript.parentNode.removeChild(newScript);

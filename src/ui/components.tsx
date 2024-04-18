@@ -21,11 +21,11 @@ export const components: TLComponents = {
 
 	Toolbar: (props) => {
 		const tools = useTools()
-		const isCodeSelected = useIsToolSelected(tools.code)
+		// const isCodeSelected = useIsToolSelected(tools.code)
 		const isDecomposeSelected = useIsToolSelected(tools.decompose)
 		return (
 			<DefaultToolbar {...props}>
-				<TldrawUiMenuItem {...tools.code} isSelected={isCodeSelected} />
+				{/* <TldrawUiMenuItem {...tools.code} isSelected={isCodeSelected} /> */}
 				<DefaultToolbarContent />
 				<TldrawUiMenuItem {...tools.decompose} isSelected={isDecomposeSelected} />
 			</DefaultToolbar>

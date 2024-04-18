@@ -18,8 +18,12 @@ import { colorIsDark } from '@/utils/colorIsDark';
 import { DecomposeTool } from '@/tools/DecomposeTool';
 import { RecomposeTool } from '@/tools/RecomposeTool';
 import { LLMTool } from '@/tools/LLMTool';
+import { CollectionProvider } from '@/collections';
+import { GraphLayoutCollection } from '@/collections/GraphLayoutCollection';
+import { ContextTool } from '@/tools/ContextTool';
 
-const tools = [CodeTool, DecomposeTool, RecomposeTool, LLMTool]
+const collections = [GraphLayoutCollection]
+const tools = [CodeTool, DecomposeTool, RecomposeTool, LLMTool, ContextTool]
 const shapeUtils = [HTMLShapeUtil, CodeShapeUtil]
 const root = createRoot();
 root.render(<App />);
@@ -61,14 +65,16 @@ function App() {
 	return (
 		<React.StrictMode>
 			<div className="tldraw__editor">
-				<Tldraw
-					tools={tools}
-					overrides={overrides}
-					components={components}
-					shapeUtils={shapeUtils}
-					onMount={setEditor}
-				>
-				</Tldraw>
+				<CollectionProvider editor={editor} collections={collections}>
+					<Tldraw
+						tools={tools}
+						overrides={overrides}
+						components={components}
+						shapeUtils={shapeUtils}
+						onMount={setEditor}
+					>
+					</Tldraw>
+				</CollectionProvider>
 			</div>
 		</React.StrictMode>
 	)

@@ -5,15 +5,15 @@ import {
 
 export const overrides: TLUiOverrides = {
 	tools(editor, tools) {
-		tools.code = {
-			id: 'code',
-			icon: 'code',
-			label: 'Code',
-			kbd: 'c',
-			onSelect: () => {
-				editor.setCurrentTool('code')
-			},
-		}
+		// tools.code = {
+		// 	id: 'code',
+		// 	icon: 'code',
+		// 	label: 'Code',
+		// 	kbd: 'c',
+		// 	onSelect: () => {
+		// 		editor.setCurrentTool('code')
+		// 	},
+		// }
 		tools.decompose = {
 			id: 'decompose',
 			icon: 'color',
@@ -39,6 +39,15 @@ export const overrides: TLUiOverrides = {
 			kbd: 's',
 			onSelect: () => {
 				editor.setCurrentTool('llm')
+			},
+		}
+		tools.context = {
+			id: 'context',
+			icon: 'text',
+			label: 'Context',
+			kbd: 'c',
+			onSelect: () => {
+				editor.setCurrentTool('context')
 			},
 		}
 		return tools
