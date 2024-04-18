@@ -1,6 +1,6 @@
 import { htmlToShape } from '@/utils/html'
 import { HTMLShape, HTMLBaseShape } from '@/shapes/HTMLShapeUtil'
-import { TLShape, TLUnknownShape } from '@tldraw/tldraw'
+import { TLArrowShape, TLShape, TLShapePartial, TLUnknownShape, createShapeId } from '@tldraw/tldraw'
 import { StateNode } from 'tldraw'
 import { CollectionsService } from '@/collections'
 
@@ -10,8 +10,44 @@ export class ContextTool extends StateNode {
   override onEnter = () => {
     console.log('onEnter context')
     const selectedShapes = this.editor.getSelectedShapes()
+    if (selectedShapes.length === 0) return
     const graphCollection = CollectionsService.getCollection('graph')
-    graphCollection.add(selectedShapes)
+    const tempShapes = [];
+    for (let i = 0; i < selectedShapes.length * Math.floor(Math.random() * 5) + 1; i++) {
+      const randomSelectedShapeIndex = Math.floor(Math.random() * selectedShapes.length)
+      const tempShape = { type: 'geo', id: createShapeId(), x: selectedShapes[randomSelectedShapeIndex].x, y: selectedShapes[randomSelectedShapeIndex].y, props: { w: 250, h: 150, fill: 'solid' } }
+
+      const arrow: TLShapePartial<TLArrowShape> = {
+        id: createShapeId(),
+        type: 'arrow',
+        props: {
+          start: {
+            type: 'binding',
+            boundShapeId: tempShape.id,
+            normalizedAnchor: { x: 0.5, y: 0.5 },
+            isExact: false,
+            isPrecise: true,
+          },
+          end: {
+            type: 'binding',
+            boundShapeId: selectedShapes[randomSelectedShapeIndex].id,
+            normalizedAnchor: { x: 0.5, y: 0.5 },
+            isExact: false,
+            isPrecise: true,
+          }
+        }
+      }
+      tempShapes.push(arrow, tempShape);
+    }
+    this.editor.createShapes(tempShapes)
+    const createdShapes = []
+    const createdArrows = []
+    for (const shape of tempShapes) {
+      createdShapes.push(this.editor.getShape(shape.id))
+      createdArrows.push({ type: 'arrow', id: createShapeId(), props: { points: [shape.id, tempShapes[0].id] } })
+    }
+
+    graphCollection.add([...selectedShapes, ...createdShapes])
     if (selectedShapes.length === 0) return
     this.getContext(selectedShapes)
     this.editor.setCurrentTool('select')
