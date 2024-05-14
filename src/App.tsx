@@ -21,10 +21,11 @@ import { LLMTool } from '@/tools/LLMTool';
 import { CollectionProvider } from '@/collections';
 import { GraphLayoutCollection } from '@/collections/GraphLayoutCollection';
 import { ContextTool } from '@/tools/ContextTool';
+import { ContextShapeUtil } from '@/shapes/ContextShapeUtil';
 
 const collections = [GraphLayoutCollection]
 const tools = [CodeTool, DecomposeTool, RecomposeTool, LLMTool, ContextTool]
-const shapeUtils = [HTMLShapeUtil, CodeShapeUtil]
+const shapeUtils = [HTMLShapeUtil, CodeShapeUtil, ContextShapeUtil]
 const root = createRoot();
 root.render(<App />);
 

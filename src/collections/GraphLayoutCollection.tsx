@@ -1,6 +1,6 @@
 import { Layout } from 'webcola';
 import { BaseCollection } from './';
-import { Editor, TLArrowShape, TLGeoShape, TLShape, TLShapeId, VecLike } from '@tldraw/tldraw';
+import { Editor, TLArrowShape, TLGeoShape, TLShape, TLShapeId } from '@tldraw/tldraw';
 
 type ColaNode = {
   id: TLShapeId;
@@ -195,8 +195,8 @@ export class GraphLayoutCollection extends BaseCollection {
       // @ts-ignore
       .links(links)
       .constraints(constraints)
-      .jaccardLinkLengths(350)
-      // .jaccardLinkLengths((edge) => calcEdgeDistance(edge as ColaNodeLink))
+      // .jaccardLinkLengths(350)
+      .linkDistance((edge) => calcEdgeDistance(edge as ColaNodeLink))
       .avoidOverlaps(true)
       .handleDisconnected(true)
   }
@@ -250,7 +250,7 @@ function getCornerToCenterOffset(w: number, h: number, rotation: number) {
 }
 
 function calcEdgeDistance(edge: ColaNodeLink) {
-  const LINK_DISTANCE = 100;
+  const LINK_DISTANCE = 60;
 
   // horizontal and vertical distances between centers
   const dx = edge.target.x - edge.source.x;
